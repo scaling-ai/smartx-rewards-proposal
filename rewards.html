@@ -1,0 +1,783 @@
+<title>SmartX Rewards · Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000; --panel: #0a0c0b; --panel2: #0e100f; --raise: #151815;
+    --line: #1c201e; --line2: #2c322f; --ink: #f1f5f3; --ink2: #dbe4e0; --muted: #e6ece9;
+    --mint: #10dcb0; --mint2: #57f0d6; --mint-dim: #10dcb014; --mint-line: #155046;
+    --cash: #f2b44a; --cash-dim: #f2b44a12; --cash-line: #5c481f; --warn: #ef8a54;
+    --cyan: #5ec8f0; --cyan2: #8fdcff; --cyan-dim: #5ec8f012; --cyan-line: #1e4a5e; --cyan-ink: #04222b;
+    --gold: #e5c05c; --ice: #79ccf5;
+    --mono: "JetBrains Mono", "Cascadia Mono", ui-monospace, "SF Mono", Consolas, monospace;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; font-size: 15px; overflow-x: hidden; }
+  h1,h2,h3,h4,h5 { margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: var(--mono); }
+  .tnum { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  /* section label = pixel-mono approximation, like the real app headers */
+  .plabel { font-family: var(--mono); text-transform: uppercase; letter-spacing: .16em; font-size: 10.5px; color: var(--muted); }
+
+  /* ============ NAV ============ */
+  nav { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 30px; padding: 0 30px; height: 56px; background: rgba(0,0,0,.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-weight: 700; letter-spacing: .1em; font-size: 15px; }
+  .owl { width: 22px; height: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 4px; border: 2px solid var(--mint); border-radius: 4px; }
+  .owl i { background: var(--mint); border-radius: 1px; }
+  nav .links { display: flex; gap: 26px; font-family: var(--mono); font-size: 13px; letter-spacing: .06em; color: var(--ink2); }
+  nav .links a.active { color: var(--ink); }
+  nav .links a:hover { color: var(--mint); }
+  nav .right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .icon { width: 33px; height: 33px; display: grid; place-items: center; color: var(--ink2); border-radius: 7px; }
+  .icon:hover { color: var(--ink); background: var(--panel); }
+  .deposit { background: #fff; color: #0a0f1a; font-weight: 700; font-size: 13px; padding: 7px 16px; border-radius: 7px; }
+  .wallet { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12.5px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; color: var(--ink2); }
+  .wallet b { color: var(--ink); }
+  @media (max-width: 900px) { nav .links { display: none; } }
+
+  .page { width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 24px 80px; }
+  .proposal { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--mint); background: var(--mint-dim); border: 1px solid var(--mint-line); border-radius: 5px; padding: 4px 9px; }
+  .proposal .d { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); }
+
+  /* ---- season 01 banner (large) ---- */
+  .banner { position: relative; overflow: hidden; margin-top: 14px; border: 1px solid var(--line2); border-radius: 16px; background: var(--panel); padding: 34px; }
+  .banner .bg01 { position: absolute; right: 2.5%; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-weight: 800; font-size: clamp(150px, 26vw, 350px); line-height: 1; color: transparent; -webkit-text-stroke: 2px var(--line2); opacity: .5; pointer-events: none; letter-spacing: -.05em; z-index: 0; user-select: none; }
+  .banner .binner { position: relative; z-index: 1; }
+  .beyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--mint); display: inline-flex; align-items: center; gap: 9px; }
+  .beyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 0 var(--mint); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 #10dcb066} 70%{box-shadow:0 0 0 6px #10dcb000} 100%{box-shadow:0 0 0 0 #10dcb000} }
+  @media (prefers-reduced-motion: reduce){ .beyebrow .dot, .lbf-head .live .p { animation: none; } }
+  .bnum { font-family: var(--mono); font-weight: 800; font-size: clamp(40px, 6.2vw, 70px); line-height: .95; letter-spacing: -.03em; margin: 14px 0 12px; }
+  .bnum small { font-size: .21em; color: var(--ink2); font-weight: 700; letter-spacing: .1em; margin-left: 13px; }
+  .bdesc { color: var(--ink2); font-size: 14px; max-width: 62ch; }
+  .bbar { height: 7px; border-radius: 5px; background: #0c100e; border: 1px solid var(--line); overflow: hidden; margin: 26px 0 0; max-width: 660px; }
+  .bbar > i { display: block; height: 100%; width: 34%; background: var(--mint); }
+  .bstats { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; margin-top: 18px; }
+  .bstat .v { font-family: var(--mono); font-weight: 700; font-size: 20px; letter-spacing: -.01em; }
+  .bstat .v.mint { color: var(--mint); }
+  .bstat .v small { font-size: 12px; color: var(--muted); font-weight: 400; }
+  .bstat .l { font-family: var(--mono); font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
+  .bdiv { width: 1px; align-self: stretch; min-height: 34px; background: var(--line2); }
+
+  /* ---- tabs ---- */
+  .tabs { display: flex; gap: 26px; border-bottom: 1px solid var(--line); margin: 26px 0 0; font-family: var(--mono); font-size: 13.5px; letter-spacing: .04em; }
+  .tabs a { padding: 0 2px 12px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tabs a.active { color: var(--ink); border-color: var(--mint); }
+  .tabs a:hover { color: var(--ink2); }
+
+  /* points header */
+  .phead { display: flex; align-items: baseline; gap: 12px; margin: 24px 0 16px; }
+  .phead h1 { font-family: var(--mono); font-weight: 700; font-size: 22px; letter-spacing: .01em; display: flex; align-items: baseline; gap: 10px; }
+  .phead h1 .c { color: var(--mint); }
+  .phead .meta { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .phead .meta b { color: var(--mint); font-weight: 400; }
+
+  /* ---- main grid ---- */
+  .cols { display: grid; grid-template-columns: 1fr 336px; gap: 22px; align-items: start; }
+  @media (max-width: 1040px) { .cols { grid-template-columns: 1fr; } }
+
+  /* task columns */
+  .tasks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  @media (max-width: 900px){ .tasks { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 620px){ .tasks { grid-template-columns: 1fr; } }
+  .tcol .th { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .tcol .th .sq { width: 8px; height: 8px; border-radius: 2px; }
+  .tcol .th .nm { font-family: var(--mono); font-size: 13px; letter-spacing: .04em; color: var(--ink); }
+  .tcol .th .t { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .tcol .list { display: grid; gap: 10px; }
+
+  .task { background: #10140f; border: 1px solid #272d28; border-radius: 12px; padding: 15px 16px; }
+  .task.locked { opacity: .5; }
+  .task .r1 { display: flex; gap: 11px; align-items: flex-start; }
+  .task .ico { width: 32px; height: 32px; flex: none; border-radius: 8px; background: var(--raise); border: 1px solid var(--line2); display: grid; place-items: center; color: var(--ink2); }
+  .task.hl .ico { color: var(--mint); border-color: var(--mint-line); background: var(--mint-dim); }
+  .task .ico svg { width: 16px; height: 16px; }
+  .task .tt { font-size: 14.5px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+  .task .td { font-size: 12px; color: var(--ink2); margin-top: 4px; line-height: 1.45; }
+  .task .pt { margin-left: auto; font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--mint); white-space: nowrap; }
+  .task .pt.new { color: var(--cash); }
+  .task .r2 { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 11px; border-top: 1px solid #272d28; }
+  .task .cnt { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .task .act { font-family: var(--mono); font-size: 11.5px; color: var(--ink2); display: inline-flex; align-items: center; gap: 5px; }
+  .task .act:hover { color: var(--mint); }
+  .newtag { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--cash); border: 1px solid var(--cash-line); background: var(--cash-dim); border-radius: 4px; padding: 1px 5px; margin-left: 7px; vertical-align: middle; }
+
+  /* ---- right rail ---- */
+  .rail .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 16px; }
+  .rc-h { display: flex; align-items: center; gap: 9px; padding: 14px 16px 0; font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .rc-h .r { margin-left: auto; letter-spacing: .04em; }
+
+  /* boost card (faithful to real app) */
+  .boost .datepill { font-family: var(--mono); font-size: 10.5px; color: var(--mint); border: 1px solid var(--mint-line); background: var(--mint-dim); border-radius: 5px; padding: 3px 8px; }
+  .boost .hd { display: flex; gap: 12px; padding: 14px 16px 0; align-items: flex-start; }
+  .boost .trophy { margin-left: auto; }
+  .boost .bt { font-family: var(--mono); font-weight: 700; font-size: 17px; letter-spacing: .02em; margin-top: 12px; }
+  .boost .bs { color: var(--ink2); font-size: 12px; margin-top: 2px; }
+  .boost .body { padding: 0 16px 16px; }
+  .boost .pool-l { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 14px; }
+  .boost .pool-v { font-family: var(--mono); font-weight: 700; font-size: 24px; letter-spacing: -.01em; }
+  .boost .pool-v u { text-decoration: none; font-size: 13px; color: var(--ink2); margin-left: 4px; }
+  .boost .ends { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--ink2); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .boost .ends b { color: var(--ink); letter-spacing: .04em; }
+  .prog-h { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 14px 0 10px; }
+  .prow { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 12.5px; }
+  .prow .radio { width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid var(--line2); flex: none; }
+  .prow .rn { color: var(--ink); }
+  .prow .rv { margin-left: auto; font-family: var(--mono); font-size: 11.5px; color: var(--ink2); }
+  .prow .rv.off { color: var(--muted); }
+  .steps-left { font-size: 11.5px; color: var(--ink2); margin: 10px 0 2px; }
+  .steps-left b { color: var(--ink); }
+  .rd { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .rd .rdh { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .rd .rdrow { display: flex; gap: 14px; margin-top: 10px; align-items: flex-start; }
+  .rd .base { font-family: var(--mono); font-size: 13px; }
+  .rd .base b { color: var(--cash); }
+  .rd .base .rk { color: var(--muted); font-size: 11px; }
+  .rd .bonus { flex: 1; }
+  .rd .bonus .bl { font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .rd .bonus .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 12px; font-family: var(--mono); font-size: 11.5px; }
+  .rd .bonus .grid span { color: var(--muted); }
+  .rd .bonus .grid b { color: var(--cash); font-weight: 400; float: right; }
+  .rules { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 11.5px; color: var(--ink2); margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .rules:hover { color: var(--mint); }
+
+  /* activity */
+  .act .thead { display: grid; grid-template-columns: 60px 1fr 52px; gap: 8px; padding: 10px 16px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .act .arow { display: grid; grid-template-columns: 60px 1fr 52px; gap: 8px; padding: 10px 16px; align-items: center; font-size: 12.5px; border-top: 1px solid var(--line); }
+  .act .arow:first-of-type { border-top: none; }
+  .act .amt { font-family: var(--mono); font-weight: 700; color: var(--mint); }
+  .act .amt.cash { color: var(--cash); }
+  .act .an { color: var(--ink2); }
+  .act .at { font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: right; }
+
+  /* redeem */
+  .perk { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--ink); padding: 9px 0; border-top: 1px solid var(--line); }
+  .perk:first-child { border-top: none; }
+  .perk .c { font-family: var(--mono); font-size: 11.5px; color: var(--mint); }
+  .perk .c.soon { color: var(--muted); }
+
+  /* ==== lower full-width blocks (new layer, native flat) ==== */
+  .sec { margin-top: 30px; }
+  .sec .sh { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .sec .sh h3 { font-family: var(--mono); font-size: 15px; font-weight: 700; letter-spacing: .02em; }
+  .sec .sh .hint { margin-left: auto; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+
+  /* referral progression rail */
+  .rail-wrap { overflow-x: auto; padding-bottom: 4px; }
+  .rail6 { display: grid; grid-template-columns: repeat(6, minmax(96px, 1fr)); min-width: 620px; }
+  .step { position: relative; text-align: center; padding-top: 48px; }
+  .step::before { content: ""; position: absolute; top: 19px; left: -50%; width: 100%; height: 2px; background: var(--line2); z-index: 0; }
+  .step:first-child::before { display: none; }
+  .step.done::before, .step.cur::before { background: var(--mint); }
+  .step .c { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-weight: 700; font-size: 12.5px; background: var(--panel); border: 2px solid var(--line2); color: var(--muted); z-index: 1; }
+  .step.done .c { border-color: var(--mint); color: var(--mint); }
+  .step.cur .c { background: var(--mint); border-color: var(--mint); color: #04241f; box-shadow: 0 0 0 4px var(--mint-dim); }
+  .step .nm { font-family: var(--mono); font-size: 12.5px; color: var(--ink); letter-spacing: .02em; }
+  .step:not(.done):not(.cur) .nm { color: var(--muted); }
+  .step .pr { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  .path { margin-top: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow: hidden; }
+  .path-h { padding: 14px 18px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--ink2); }
+  .path-h b { color: var(--mint); font-family: var(--mono); }
+  .unlock { display: flex; align-items: flex-start; gap: 14px; padding: 15px 18px; border-top: 1px solid var(--line); }
+  .unlock:first-of-type { border-top: none; }
+  .unlock .uc { width: 22px; height: 22px; flex: none; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: 12px; border: 1px solid var(--line2); color: var(--muted); margin-top: 1px; }
+  .unlock.done .uc { background: var(--mint-dim); border-color: var(--mint-line); color: var(--mint); }
+  .unlock.cur .uc { border-color: var(--mint); color: var(--mint); }
+  .unlock .ut { flex: 1; font-size: 13.5px; color: var(--ink); line-height: 1.45; }
+  .unlock .ut b { font-weight: 600; }
+  .unlock.done .ut b { color: var(--ink2); font-weight: 500; }
+  .unlock .ut .sub { display: block; font-family: var(--mono); font-size: 11.5px; color: var(--ink2); margin-top: 4px; }
+  .unlock .up { font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--mint); white-space: nowrap; }
+  .unlock:not(.done):not(.cur) .up { color: var(--muted); }
+  .ubar { height: 5px; border-radius: 3px; background: #0c100e; overflow: hidden; margin-top: 9px; max-width: 280px; }
+  .ubar > i { display: block; height: 100%; background: var(--mint); }
+  .chip-int { font-family: var(--mono); font-size: 10px; letter-spacing: .03em; color: var(--muted); border: 1px solid var(--line2); border-radius: 4px; padding: 1px 6px; margin-left: 7px; white-space: nowrap; }
+  .rail-note { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 13px; line-height: 1.5; }
+  .rail-note b { color: var(--ink2); font-weight: 400; }
+  /* big-KOL fast track */
+  .kol { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 16px; border: 1px solid var(--mint-line); border-radius: 12px; padding: 18px 20px; background: var(--panel2); }
+  .kol .l { flex: 1; min-width: 280px; }
+  .kol .t { font-family: var(--mono); font-weight: 700; font-size: 15px; letter-spacing: .01em; margin: 6px 0 5px; }
+  .kol .d { color: var(--ink2); font-size: 13px; line-height: 1.5; max-width: 66ch; }
+  .kol .cta { font-family: var(--mono); font-weight: 700; font-size: 13px; color: #04241f; background: var(--mint); padding: 12px 20px; border-radius: 8px; white-space: nowrap; }
+  .kol .cta:hover { background: var(--mint2); }
+
+  /* leaderboard */
+  .lbf-head { display: flex; align-items: center; gap: 13px; flex-wrap: wrap; margin-bottom: 13px; }
+  .lbf-head h3 { font-family: var(--mono); font-size: 15px; font-weight: 700; letter-spacing: .02em; }
+  .lbf-head .live { font-family: var(--mono); font-size: 10.5px; color: var(--mint); display: inline-flex; align-items: center; gap: 6px; }
+  .lbf-head .live .p { width: 5px; height: 5px; border-radius: 50%; background: var(--mint); animation: pulse 2s infinite; }
+  .lbf-head .cnt { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .lbf-filters { margin-left: auto; display: flex; gap: 7px; flex-wrap: wrap; }
+  .fbtn { font-family: var(--mono); font-size: 11.5px; color: var(--ink2); border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 7px 12px; cursor: pointer; }
+  .fbtn.on { color: var(--mint); border-color: var(--mint-line); background: var(--mint-dim); }
+  .fbtn:hover { color: var(--ink); }
+  .lbf-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+  .lbf-table { min-width: 880px; background: var(--panel); }
+  .lbf-row { display: grid; grid-template-columns: 56px 1.5fr 128px 1fr 1fr 1.5fr 78px; align-items: center; gap: 14px; padding: 13px 20px; border-top: 1px solid var(--line); font-size: 13.5px; }
+  .lbf-row.head { border-top: none; background: var(--panel2); font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 12px 20px; }
+  .lbf-row .rk { font-family: var(--mono); font-weight: 700; color: var(--ink2); }
+  .lbf-row .rk.top { color: var(--mint); }
+  .lbf-row .who { color: var(--ink); font-family: var(--mono); display: flex; align-items: center; gap: 11px; }
+  .lbf-row .who .av { width: 26px; height: 26px; border-radius: 6px; background: var(--raise); border: 1px solid var(--line2); flex: none; }
+  .tierpill { font-family: var(--mono); font-size: 10px; letter-spacing: .04em; padding: 3px 9px; border-radius: 5px; border: 1px solid var(--line2); color: var(--ink2); white-space: nowrap; }
+  .tierpill.amb { color: var(--mint); border-color: var(--mint-line); background: var(--mint-dim); }
+  .tierpill.gold { color: var(--gold); border-color: #5a4a1e; background: #e5c05c10; }
+  .tierpill.dia { color: var(--ice); border-color: #1e455a; background: #79ccf510; }
+  .lbf-row .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .lbf-row .share { font-family: var(--mono); font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 11px; }
+  .lbf-row .share .sb { flex: 1; height: 5px; border-radius: 3px; background: #0c100e; overflow: hidden; max-width: 120px; }
+  .lbf-row .share .sb i { display: block; height: 100%; background: var(--mint); }
+  .lbf-row .trend { font-family: var(--mono); font-size: 12.5px; }
+  .lbf-row .trend.up { color: var(--mint); }
+  .lbf-row .trend.dn { color: var(--warn); }
+  .lbf-row .trend.fl { color: var(--muted); }
+  .lbf-row.me { background: var(--mint-dim); }
+  .lbf-row.me .who, .lbf-row.me .rk { color: var(--mint); }
+  .lbf-sep { text-align: center; color: var(--muted); font-family: var(--mono); font-size: 11px; padding: 8px; border-top: 1px solid var(--line); background: var(--panel2); letter-spacing: .08em; }
+
+  /* apply */
+  .apply { border: 1px solid var(--mint-line); border-radius: 12px; padding: 20px; background: var(--panel2); }
+  .apply .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .apply .top h4 { font-size: 18px; font-weight: 650; letter-spacing: -.01em; }
+  .apply .top p { color: var(--ink2); font-size: 13px; margin: 6px 0 0; max-width: 62ch; }
+  .apply .cta { background: var(--mint); color: #04241f; font-family: var(--mono); font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 8px; border: none; white-space: nowrap; cursor: pointer; }
+  .apply .cta:hover { background: var(--mint2); }
+  .apply .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; margin-top: 18px; }
+  @media (max-width: 620px){ .apply .steps { grid-template-columns: 1fr; } }
+  .apply .step { background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 13px; }
+  .apply .step .n { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: .12em; }
+  .apply .step .t { font-family: var(--mono); font-weight: 650; font-size: 13px; margin: 7px 0 4px; display: flex; align-items: center; gap: 6px; }
+  .apply .step .s { font-size: 11.5px; color: var(--ink2); }
+  .apply .ok { color: var(--mint); }
+  .apply .note { display: flex; align-items: center; gap: 8px; margin-top: 15px; font-family: var(--mono); font-size: 11.5px; color: var(--ink2); border-top: 1px solid var(--line); padding-top: 14px; line-height: 1.5; }
+  .apply .note b { color: var(--mint); }
+  .strike { color: var(--muted); text-decoration: line-through; }
+
+  /* referral · invite friends (limitless-style) */
+  .ref-hero { background: linear-gradient(152deg, #12c49c 0%, #05493a 100%); border-radius: 20px; padding: 26px 28px; color: #fff4e0; font-family: var(--sans); }
+  .rh-top { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+  .rh-label { font-family: var(--mono); font-weight: 700; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: #04211c; }
+  .rh-raterow { display: flex; align-items: center; gap: 22px; margin-top: 12px; flex-wrap: wrap; }
+  .rh-tiercol { display: flex; flex-direction: column; gap: 10px; }
+  .rh-gauge { position: relative; width: 132px; height: 132px; flex: none; }
+  .rg-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .rg-track { fill: none; stroke: rgba(255,244,224,.2); stroke-width: 11; }
+  .rg-fill { fill: none; stroke: #ffcf5c; stroke-width: 11; stroke-linecap: round; stroke-dasharray: 364.4; stroke-dashoffset: 182.2; filter: drop-shadow(0 0 8px rgba(255,197,72,.6)); }
+  .rg-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .rg-rate { font-family: var(--sans); font-weight: 800; font-size: 43px; line-height: 1; letter-spacing: -.03em; color: #ffd166; }
+  .rg-max { font-family: var(--sans); font-weight: 700; font-size: 10px; color: rgba(255,244,224,.72); margin-top: 3px; letter-spacing: .05em; text-transform: uppercase; }
+  .rh-badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--sans); font-weight: 800; font-size: 15.5px; color: #ffdd8a; background: rgba(255,207,92,.14); border: 1px solid rgba(255,207,92,.44); border-radius: 999px; padding: 9px 17px; }
+  .rh-badge .rg-ic { width: 15px; height: 15px; color: #ffcf5c; }
+  .rh-next { font-family: var(--sans); font-weight: 700; font-size: 13px; color: rgba(255,244,224,.8); }
+  .rh-next b { color: #ffd166; }
+  .rh-vol { text-align: right; }
+  .rh-vv { font-family: var(--mono); font-weight: 800; font-size: 28px; letter-spacing: -.01em; margin-top: 6px; }
+  .slider { background: #000; border-radius: 14px; padding: 22px 22px 20px; margin-top: 22px; }
+  .slider-scroll { overflow-x: auto; }
+  .s6 { display: grid; grid-template-columns: repeat(6, minmax(90px, 1fr)); min-width: 560px; }
+  .snode { position: relative; text-align: center; padding-top: 54px; }
+  .snode::before { content: ""; position: absolute; top: 41px; left: -50%; width: 100%; height: 2px; background: var(--line2); z-index: 0; }
+  .snode:first-child::before { display: none; }
+  .snode.done::before, .snode.cur::before { background: var(--mint); }
+  .snode .tp { font-weight: 700; font-size: 15px; color: var(--ink); display: block; letter-spacing: -.01em; }
+  .snode .tn { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .snode:not(.done):not(.cur) .tp { color: var(--muted); }
+  .snode .mark { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); width: 24px; height: 24px; border-radius: 50%; background: #000; border: 2px solid var(--line2); z-index: 1; display: grid; place-items: center; color: var(--muted); }
+  .snode.done .mark { border-color: var(--mint); background: var(--mint); }
+  .snode.cur .mark { border-color: var(--mint); background: var(--mint); box-shadow: 0 0 0 5px var(--mint-dim); }
+  .snode .mark svg { width: 11px; height: 11px; }
+  .snode .cond { display: none; }
+  .snode.done .cond, .snode.cur .cond { color: var(--ink2); }
+  .s-next { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink2); }
+  .s-next b { color: var(--ink); }
+  .s-next .pill { font-family: var(--mono); font-weight: 700; font-size: 12.5px; color: var(--mint); background: var(--mint-dim); border: 1px solid var(--mint-line); border-radius: 6px; padding: 3px 9px; }
+  .conds { margin-top: 20px; display: grid; gap: 9px; }
+  .conds-h { display: flex; align-items: baseline; gap: 10px; margin-bottom: 3px; font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink2); }
+  .conds-h span { color: var(--muted); letter-spacing: 0; text-transform: none; font-size: 11.5px; }
+  .cnd { display: flex; align-items: flex-start; gap: 15px; border: 1px solid #272d28; border-radius: 12px; padding: 16px 18px; background: #10140f; font-size: 15px; }
+  .cnd .ci { width: 22px; height: 22px; flex: none; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: 12px; border: 1px solid var(--line2); color: var(--muted); margin-top: 1px; }
+  .cnd .ci svg { width: 11px; height: 11px; }
+  .cnd.done .ci { background: var(--mint-dim); border-color: var(--mint-line); color: var(--mint); }
+  .cnd.cur .ci { border-color: var(--mint); color: var(--mint); }
+  .cnd .ct { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .cnd .cl { color: var(--ink); font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; line-height: 1.4; }
+  .cnd.done .cl { font-weight: 500; color: var(--ink2); }
+  .cnd .m { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .cnd .cbar { height: 5px; border-radius: 3px; background: #0c100e; overflow: hidden; max-width: 340px; }
+  .cnd .cbar > i { display: block; height: 100%; background: var(--mint); }
+  .cnd.lock .cbar > i { background: var(--line2); }
+  .cnd .cp { font-family: var(--mono); font-weight: 800; font-size: 14px; color: var(--mint); white-space: nowrap; margin-top: 1px; }
+  .cnd.done .cp { color: var(--ink2); font-weight: 600; font-size: 12.5px; }
+  .cnd.lock .cp { color: var(--muted); }
+  .cnd.cur { border-color: var(--mint-line); background: linear-gradient(90deg, var(--mint-dim), var(--panel) 55%); }
+  .next-tag { font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--mint); background: var(--mint-dim); border: 1px solid var(--mint-line); border-radius: 4px; padding: 1px 7px; }
+  .ref-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-top: 16px; }
+  @media (max-width: 760px){ .ref-row { grid-template-columns: 1fr; } }
+  .ref-card { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 18px; }
+  .ref-card .h { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .linkbox { display: flex; align-items: center; gap: 10px; margin-top: 12px; border: 1px solid var(--line2); border-radius: 10px; padding: 6px 6px 6px 14px; background: #000; }
+  .linkbox .u { flex: 1; font-family: var(--mono); font-size: 13px; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-mint { font-family: var(--mono); font-weight: 700; font-size: 12.5px; color: #04241f; background: var(--mint); border: none; border-radius: 8px; padding: 9px 17px; cursor: pointer; white-space: nowrap; }
+  .btn-mint:hover { background: var(--mint2); }
+  .btn-line { display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mono); font-weight: 600; font-size: 12.5px; color: var(--ink); background: var(--panel2); border: 1px solid var(--line2); border-radius: 9px; padding: 12px; cursor: pointer; width: 100%; }
+  .btn-line:hover { border-color: var(--mint-line); color: var(--mint); }
+  .btn-line + .btn-line { margin-top: 9px; }
+
+  /* tabs = pages */
+  .tabpane { display: none; }
+  .tabpane.active { display: block; }
+  /* real SmartX logo */
+  .logo { height: 23px; width: auto; display: block; }
+  .xico { width: .82em; height: .82em; display: inline-block; vertical-align: -0.05em; fill: currentColor; }
+  /* boost = points multiplier (no cash) */
+  .boost-mult { font-family: var(--mono); font-weight: 800; font-size: 42px; color: var(--mint); letter-spacing: -.02em; margin-top: 14px; line-height: 1; }
+  .boost-mult small { font-size: .32em; color: var(--ink2); font-weight: 700; letter-spacing: .12em; margin-left: 8px; }
+  .boost-sub { font-size: 12px; color: var(--ink2); margin-top: 7px; line-height: 1.45; }
+  .prow .rv.mintc { color: var(--mint); }
+  .prow .radio.done { background: var(--mint); border-color: var(--mint); }
+  /* nft-style leaderboard avatars */
+  .lbf-row .who .av { overflow: hidden; }
+  .lbf-row .who .av > svg { width: 100%; height: 100%; display: block; }
+  /* brand pixel field for empty right space */
+  .pxf { position: absolute; top: 0; right: 0; bottom: 0; width: 48%; background-image: radial-gradient(currentColor 1.5px, transparent 1.7px); background-size: 15px 15px; -webkit-mask-image: radial-gradient(130% 120% at 116% 45%, #000 18%, transparent 66%); mask-image: radial-gradient(130% 120% at 116% 45%, #000 18%, transparent 66%); pointer-events: none; z-index: 0; }
+  .ref-hero { position: relative; overflow: hidden; }
+  .ref-hero > .rh-top, .ref-hero > .slider { position: relative; z-index: 1; }
+
+  /* referral stat cards */
+  .rstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+  @media (max-width: 820px){ .rstats { grid-template-columns: 1fr 1fr; } }
+  .rstat { border: 1px solid #272d28; border-radius: 12px; background: #10140f; padding: 16px 18px; display: flex; flex-direction: column; min-height: 120px; }
+  .rstat .l { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink2); display: flex; align-items: center; gap: 7px; }
+  .rstat .l .i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); font-size: 9px; font-style: italic; display: grid; place-items: center; }
+  .rstat .v { font-family: var(--mono); font-weight: 800; font-size: 27px; letter-spacing: -.01em; margin: 9px 0 0; }
+  .rstat .v.mint { color: var(--mint); }
+  .rstat .av { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 9px 0 0; }
+  .rstat .av .v { margin: 0; }
+  .rstat .claim { font-family: var(--mono); font-weight: 700; font-size: 12px; color: #04241f; background: var(--mint); border: none; border-radius: 7px; padding: 8px 15px; cursor: pointer; }
+  .rstat .claim:hover { background: var(--mint2); }
+  .rstat .s { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: auto; padding-top: 10px; }
+  .rstat.hl { border-color: var(--mint-line); }
+
+  /* stats inside the mint hero */
+  .rh-left { flex: none; }
+  .rh-stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; align-items: stretch; margin-top: 4px; }
+  .hs { background: rgba(255,246,228,.08); border: 1px solid rgba(255,214,130,.26); border-radius: 12px; padding: 13px 14px; text-align: center; }
+  @media (max-width: 640px){ .rh-stats { grid-template-columns: 1fr 1fr; } }
+  .hs .hl { font-family: var(--sans); font-weight: 900; font-size: 13px; letter-spacing: .03em; text-transform: uppercase; color: #04211c; }
+  .hs .hv { font-family: var(--sans); font-weight: 800; font-size: 23px; color: #ffd166; margin-top: 4px; letter-spacing: -.01em; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .hs .hsub { font-family: var(--sans); font-weight: 700; font-size: 11px; color: rgba(4,33,28,.74); margin-top: 4px; }
+  .hclaim { font-family: var(--sans); font-weight: 800; font-size: 10.5px; color: #053b30; background: #ffcf5c; border: none; border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  .hclaim:hover { background: #063028; }
+
+  /* ===== POINTS pool banner = dark cyan-tinted card with cyan accents; boxed stat tiles ===== */
+  .banner { background: radial-gradient(135% 135% at 88% 8%, #0f2630, #0a100f 62%); border-color: var(--cyan-line); }
+  .banner .beyebrow { color: var(--cyan); font-size: 12px; letter-spacing: .2em; }
+  .banner .beyebrow .dot { background: var(--cyan); box-shadow: 0 0 0 0 var(--cyan); }
+  .banner .bnumrow { display: flex; align-items: flex-end; gap: 16px; margin: 12px 0 6px; flex-wrap: wrap; }
+  .banner .bnum { color: var(--ink); font-family: "Segoe UI Variable Display", "Segoe UI", var(--sans); font-weight: 800; font-variant-numeric: lining-nums tabular-nums; font-size: clamp(44px, 6.6vw, 74px); line-height: .9; letter-spacing: -.03em; margin: 0; }
+  .banner .blabel { font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: var(--cyan); margin: 0 0 14px; }
+  .banner .bdesc { color: var(--ink2); font-size: 15px; max-width: 52ch; }
+  .banner .bdesc b { color: var(--cyan); font-weight: 650; }
+  .banner .bbar { background: #0b1416; border-color: var(--line); }
+  .banner .bbar > i { background: var(--cyan); }
+  .banner .sbadge { position: absolute; top: 22px; right: 30px; z-index: 2; text-align: right; }
+  .banner .sbadge .sb-lab { display: block; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .4em; text-transform: uppercase; color: var(--cyan); opacity: .9; }
+  .banner .sbadge .sb-num { display: block; font-family: var(--mono); font-weight: 800; font-size: clamp(50px, 9vw, 78px); line-height: .82; letter-spacing: -.04em; margin-top: 2px; background: linear-gradient(150deg, #aae7ff 0%, var(--cyan) 52%, #2f9fc9 100%); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 5px 24px rgba(94,200,240,.42)); }
+  .banner .pxf { color: var(--cyan) !important; opacity: .06 !important; }
+  .banner .bstats { display: grid; grid-template-columns: repeat(auto-fit, minmax(116px, 1fr)); gap: 10px; margin-top: 24px; }
+  .banner .bstat { background: #0d1517; border: 1px solid var(--line2); border-radius: 12px; padding: 13px 15px; }
+  .banner .bstat .v { color: var(--ink); font-size: 20px; }
+  .banner .bstat .v.mint { color: var(--cyan); }
+  .banner .bstat .v small { color: var(--muted); }
+  .banner .bstat .l { color: var(--muted); margin-top: 5px; }
+  .banner .bdiv { display: none; }
+.banner-wrap { position: relative; margin-top: 30px; }
+.banner-wrap .banner { margin-top: 0; }
+.bwindow { position: absolute; top: -16px; left: 30px; z-index: 4; display: inline-flex; align-items: center; gap: 12px; background: linear-gradient(135deg, #103543, #0a1e26); border: 1px solid var(--cyan-line); border-radius: 999px; padding: 11px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.45); }
+.bwindow .wdot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px rgba(94,200,240,.75); }
+.bwindow .wdate { font-family: var(--mono); font-weight: 800; font-size: 16px; letter-spacing: .03em; color: #dcf4ff; }
+.bwindow .wtag { font-family: var(--mono); font-weight: 700; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); padding-left: 13px; border-left: 1px solid var(--cyan-line); }
+  .phead h1 .c { color: var(--cyan); }
+  .task .pt { color: var(--cyan); }
+  .task .pt.new { color: var(--cash); }
+  .task.hl .ico { color: var(--cyan); border-color: var(--cyan-line); background: var(--cyan-dim); }
+  .act .amt { color: var(--cyan); }
+  .act .amt.cash { color: var(--cash); }
+  .perk .c { color: var(--cyan); }
+  .perk .c.soon { color: var(--muted); }
+  .boost { border-color: var(--cyan-line); background: radial-gradient(120% 120% at 90% 0%, #06232c 0%, var(--panel) 55%); }
+  .boost .rc-h { color: var(--cyan); }
+  .boost .datepill { color: var(--cyan); border-color: var(--cyan-line); background: var(--cyan-dim); }
+  .boost .trophy svg { fill: var(--cyan); }
+  .boost-mult { color: var(--cyan); }
+  .prow .rv.mintc { color: var(--cyan); }
+  .prow .radio.done { background: var(--cyan); border-color: var(--cyan); }
+
+  /* points tasks · grouped compact list (overhaul) */
+  .tasks2 { display: grid; gap: 16px; }
+  .tgroup { border: 1px solid #272d28; border-radius: 14px; background: #0e120f; overflow: hidden; }
+  .tg-h { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #222820; font-family: var(--mono); font-size: 13px; letter-spacing: .04em; color: var(--ink); }
+  .tg-h .sq { width: 8px; height: 8px; border-radius: 2px; }
+  .tg-h .tg-t { margin-left: auto; font-size: 11px; color: var(--muted); letter-spacing: .02em; }
+  .trow { display: grid; grid-template-columns: 38px minmax(0,1fr) 76px 46px 116px; align-items: center; gap: 15px; padding: 13px 16px; border-top: 1px solid #1e231f; }
+  .trow:first-of-type { border-top: none; }
+  .trow.locked { opacity: .46; }
+  .tico { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(158deg, #161c1e, #0d1112); border: 1px solid var(--line2); display: grid; place-items: center; color: var(--cyan); box-shadow: inset 0 1px 0 rgba(255,255,255,.03); }
+  .tico svg { width: 18px; height: 18px; }
+  .trow.hl .tico { color: var(--cyan); border-color: rgba(94,200,240,.5); background: linear-gradient(158deg, rgba(94,200,240,.22), rgba(94,200,240,.05)); box-shadow: 0 0 18px rgba(94,200,240,.14), inset 0 1px 0 rgba(255,255,255,.04); }
+  .trow .tt { font-size: 14.5px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+  .trow .td { font-size: 12px; color: var(--ink2); margin-top: 2px; }
+  .tprog { font-family: var(--mono); font-size: 11.5px; color: var(--muted); text-align: right; }
+  .tpt { font-family: var(--mono); font-weight: 800; font-size: 15px; color: var(--cyan); text-align: right; }
+  .tpt.new { color: var(--cash); }
+  .tbtn { font-family: var(--sans); font-weight: 650; font-size: 12.5px; color: #04241f; background: var(--mint); border: none; border-radius: 9px; padding: 9px 0; text-align: center; white-space: nowrap; cursor: pointer; display: block; transition: background .15s; }
+  .tbtn:hover { background: var(--mint2); }
+  .trow.locked { opacity: .55; }
+  .trow.locked .tbtn { background: transparent; color: var(--muted); border: 1px solid var(--line2); cursor: default; }
+  .trow.done .tico { color: var(--mint); border-color: var(--mint-line); background: var(--mint-dim); }
+  .trow.done .tprog { color: var(--mint); }
+  .tbtn.done { background: var(--mint-dim); color: var(--mint); border: 1px solid var(--mint-line); cursor: default; }
+  .tbtn.done:hover { background: var(--mint-dim); }
+  @media (max-width: 720px){ .trow { grid-template-columns: 34px minmax(0,1fr) auto auto; } .tprog { display: none; } }
+  /* referral link share button */
+  .lb-share { font-family: var(--mono); font-weight: 600; font-size: 12px; color: var(--ink); background: transparent; border: 1px solid var(--line2); border-radius: 7px; padding: 8px 13px; cursor: pointer; white-space: nowrap; }
+  .lb-share:hover { border-color: var(--mint-line); color: var(--mint); }
+
+  /* pretty task cards + real CTA buttons */
+  .tasks3 { display: grid; gap: 26px; }
+  .tsec-h { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-family: var(--mono); font-size: 13px; letter-spacing: .04em; color: var(--ink); }
+  .tsec-h .sq { width: 8px; height: 8px; border-radius: 2px; }
+  .tsec-h .t { margin-left: auto; font-size: 11px; color: var(--muted); }
+  .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(228px, 1fr)); gap: 14px; }
+  .tcard { border: 1px solid #262c28; border-radius: 16px; background: #0e120f; padding: 18px; display: flex; flex-direction: column; }
+  .tcard .top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+  .tcico { width: 42px; height: 42px; border-radius: 12px; background: var(--raise); border: 1px solid var(--line2); display: grid; place-items: center; color: var(--ink2); }
+  .tcard.hl .tcico { color: var(--cyan); border-color: var(--cyan-line); background: var(--cyan-dim); }
+  .tcico svg { width: 20px; height: 20px; }
+  .tcpt { font-family: var(--mono); font-weight: 800; font-size: 22px; color: var(--cyan); letter-spacing: -.02em; }
+  .tcpt.new { color: var(--cash); }
+  .tctt { font-size: 16px; font-weight: 650; color: var(--ink); letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tctd { font-size: 13px; color: var(--ink2); line-height: 1.45; margin-top: 5px; flex: 1; }
+  .tcprog { display: flex; align-items: center; gap: 11px; margin-top: 16px; }
+  .tcbar { flex: 1; height: 6px; border-radius: 4px; background: #080b09; overflow: hidden; }
+  .tcbar > i { display: block; height: 100%; background: var(--cyan); }
+  .tccnt { font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .tcbtn { margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--sans); font-weight: 650; font-size: 14px; color: var(--cyan); background: var(--cyan-dim); border: 1px solid var(--cyan-line); border-radius: 11px; padding: 12px; cursor: pointer; transition: background .15s; }
+  .tcbtn:hover { background: #5ec8f022; }
+  .tcbtn span { transition: transform .15s; }
+  .tcbtn:hover span { transform: translateX(3px); }
+  .tcard.locked { opacity: .5; }
+  .tcard.locked .tcbtn { color: var(--muted); background: transparent; border-color: var(--line); cursor: default; }
+  .tcard.locked .tcbtn:hover { background: transparent; }
+  /* leaderboard show-more */
+  .lbf-row.more { display: none; }
+  .lbf-table.expanded .lbf-row.more { display: grid; }
+  .lb-more-btn { width: 100%; font-family: var(--mono); font-weight: 600; font-size: 12.5px; color: var(--ink2); background: var(--panel2); border: 1px solid var(--line2); border-radius: 10px; padding: 12px; cursor: pointer; margin-top: 12px; }
+  .lb-more-btn:hover { color: var(--cyan); border-color: var(--cyan-line); }
+  .lbf-note { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 12px; letter-spacing: .02em; line-height: 1.5; }
+
+  .foot { text-align: center; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: .05em; margin-top: 38px; }
+</style>
+
+<nav>
+  <a class="brand" href="#"><img class="logo" src="smartx-logo.svg" alt="SmartX"></a>
+  <div class="links">
+    <a href="#">Markets</a><a href="#">Smart Money</a><a href="#">Signal</a><a href="#">Watchlist</a><a href="#" class="active">Rewards</a>
+  </div>
+  <div class="right">
+    <span class="icon" aria-label="Search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></span>
+    <span class="icon" aria-label="Notifications"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+    <a href="#" class="deposit">Deposit</a>
+    <span class="wallet"><b>$0</b><span style="opacity:.4">|</span>$0</span>
+  </div>
+</nav>
+
+<div class="page">
+  <!-- ===== TABS (each tab = a page) ===== -->
+  <div class="tabs">
+    <a href="#" class="active" data-tab="referral">Referral</a>
+    <a href="#" data-tab="points">Points</a>
+    <a href="#" data-tab="leaderboard">Leaderboard</a>
+  </div>
+
+  <div class="tabpane" id="tab-points">
+  <!-- season 01 banner -->
+  <div class="banner-wrap">
+  <div class="bwindow"><span class="wdot"></span><span class="wdate">Jul 25 to Aug 4</span><span class="wtag">10-day pool</span></div>
+  <div class="banner">
+    <div class="sbadge"><span class="sb-lab">Season</span><span class="sb-num">01</span></div>
+    <div class="pxf" style="color:#04222b;opacity:.09"></div>
+    <div class="binner">
+      <div class="bnumrow"><div class="bnum">1,000,000</div><div class="blabel">Point pool</div></div>
+      <div class="bdesc">Split by points earned: your own, plus <b>10% of every referral's trading and task points</b>. Your slice is live now and locks at season close.</div>
+      <div class="bbar"><i></i></div>
+      <div class="bstats">
+        <div class="bstat"><div class="v">6d 14h</div><div class="l">left in season</div></div>
+        <div class="bstat"><div class="v">4,912</div><div class="l">traders earning</div></div>
+        <div class="bstat"><div class="v">34%</div><div class="l">elapsed</div></div>
+        <div class="bdiv"></div>
+        <div class="bstat"><div class="v mint">3,240</div><div class="l">your points</div></div>
+        <div class="bstat"><div class="v">#218 <small>/ 4,912</small></div><div class="l">volume rank</div></div>
+        <div class="bstat"><div class="v">0.32%</div><div class="l">pool share</div></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- points header -->
+  <div class="phead">
+    <h1>SmartX Points <span class="c tnum">3,240</span></h1>
+    <div class="meta">Season 01 · <b>2,900 from trading &amp; tasks + 340 from referrals</b></div>
+  </div>
+
+  <div class="cols">
+    <div class="main">
+      <div class="tasks2">
+        <div class="tgroup">
+          <div class="tg-h"><span class="sq" style="background:var(--mint)"></span>Daily<span class="tg-t">resets in 15h 56m</span></div>
+          <div class="trow hl">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M20 9a8 8 0 0 0-14-3M4 15a8 8 0 0 0 14 3"/></svg></span>
+            <div class="tb"><div class="tt">Daily Trade</div><div class="td">Complete 1 trade today</div></div>
+            <div class="tprog">0 / 1</div><span class="tpt">+5</span><a class="tbtn" href="#">Trade</a>
+          </div>
+          <div class="trow">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 7-8"/></svg></span>
+            <div class="tb"><div class="tt">Daily Volume $10</div><div class="td">Trade $10 today</div></div>
+            <div class="tprog">$0 / 10</div><span class="tpt">+10</span><a class="tbtn" href="#">Trade</a>
+          </div>
+          <div class="trow">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 7-8"/></svg></span>
+            <div class="tb"><div class="tt">Daily Volume $100</div><div class="td">Trade $100 today</div></div>
+            <div class="tprog">$0 / 100</div><span class="tpt">+80</span><a class="tbtn" href="#">Trade</a>
+          </div>
+          <div class="trow locked">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span>
+            <div class="tb"><div class="tt">Daily Check-in</div><div class="td">Unlocks after your first trade</div></div>
+            <div class="tprog">0 / 1</div><span class="tpt">+1</span><span class="tbtn">Check in</span>
+          </div>
+        </div>
+        <div class="tgroup">
+          <div class="tg-h"><span class="sq" style="background:var(--ice)"></span>Weekly<span class="tg-t">resets in 6d 15h</span></div>
+          <div class="trow">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 7-8"/></svg></span>
+            <div class="tb"><div class="tt">Weekly Volume $500</div><div class="td">Trade $500 this week</div></div>
+            <div class="tprog">$0 / 500</div><span class="tpt">+150</span><a class="tbtn" href="#">Trade</a>
+          </div>
+          <div class="trow">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <div class="tb"><div class="tt">Weekly Active 7 Days</div><div class="td">Trade every day this week</div></div>
+            <div class="tprog">0 / 7</div><span class="tpt">+100</span><a class="tbtn" href="#">Trade</a>
+          </div>
+        </div>
+        <div class="tgroup">
+          <div class="tg-h"><span class="sq" style="background:var(--cash)"></span>Milestone<span class="tg-t">one-time</span></div>
+          <div class="trow done">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>
+            <div class="tb"><div class="tt">Connect X Account</div><div class="td">Post a tweet with your referral code</div></div>
+            <div class="tprog">1 / 1</div><span class="tpt">+5</span><span class="tbtn done">Done</span>
+          </div>
+          <div class="trow done">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>
+            <div class="tb"><div class="tt">&ldquo;@SmartXTerminal&rdquo; in bio</div><div class="td">Add @SmartXTerminal to your X bio</div></div>
+            <div class="tprog">1 / 1</div><span class="tpt">+25</span><span class="tbtn done">Done</span>
+          </div>
+          <div class="trow done">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></span>
+            <div class="tb"><div class="tt">Total Deposit $10</div><div class="td">Deposit a total of $10</div></div>
+            <div class="tprog">$10 / 10</div><span class="tpt">+5</span><span class="tbtn done">Done</span>
+          </div>
+          <div class="trow done">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 8l2 2 3-3.5"/></svg></span>
+            <div class="tb"><div class="tt">Invite 5 Friends</div><div class="td">Invite 5 friends who deposit</div></div>
+            <div class="tprog">5 / 5</div><span class="tpt">+50</span><span class="tbtn done">Done</span>
+          </div>
+          <div class="trow locked">
+            <span class="tico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>
+            <div class="tb"><div class="tt">Follow SmartX on X</div><div class="td">Follow the official account</div></div>
+            <div class="tprog">0 / 1</div><span class="tpt">+3</span><span class="tbtn">Follow</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== RIGHT RAIL ===== -->
+    <div class="rail">
+
+      <!-- boost -->
+      <div class="card boost">
+        <div class="hd">
+          <span class="datepill">Season 01</span>
+        </div>
+        <div style="padding:0 16px"><div class="bt">Your season</div><div class="bs">How your points stack up</div></div>
+        <div class="body">
+          <div class="boost-mult">3,240<small>YOUR POINTS</small></div>
+          <div class="boost-sub">Your live slice of the 1,000,000 pool. Locks at season close.</div>
+          <div class="ends"><span>Lifetime points</span><b>3,240</b></div>
+
+          <div class="prog-h"><span>Where they come from</span></div>
+          <div class="prow"><span class="radio done"></span><span class="rn">Trading &amp; tasks</span><span class="rv mintc">2,900</span></div>
+          <div class="prow"><span class="radio done"></span><span class="rn">From referrals (10% of trading + tasks)</span><span class="rv mintc">+340</span></div>
+          <div class="prow"><span class="radio"></span><span class="rn">Pool share</span><span class="rv">0.32%</span></div>
+          <div class="prow"><span class="radio"></span><span class="rn">Volume rank</span><span class="rv">#218 / 4,912</span></div>
+          <a class="rules" href="#"><span>Points carry toward the token</span><span>↗</span></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div><!-- /tab-points -->
+
+  <div class="tabpane active" id="tab-referral">
+  <!-- ===== REFERRAL · INVITE FRIENDS ===== -->
+  <div class="sec" id="referral">
+    <div class="sh"><h3>INVITE FRIENDS</h3><span class="hint">Earn 15-50% of the trading fees your referrals pay, plus 10% of their points · accrues daily, claim anytime</span></div>
+
+    <div class="ref-hero">
+      <div class="rh-top">
+        <div class="rh-left">
+          <div class="rh-label">Your referral rate</div>
+          <div class="rh-raterow">
+            <div class="rh-gauge">
+              <svg viewBox="0 0 132 132" class="rg-svg"><circle cx="66" cy="66" r="58" class="rg-track"/><circle cx="66" cy="66" r="58" class="rg-fill"/></svg>
+              <div class="rg-center"><span class="rg-rate">25%</span><span class="rg-max">of 50% max</span></div>
+            </div>
+            <div class="rh-tiercol">
+              <div class="rh-badge"><svg class="rg-ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.7 5.6 6.1.9-4.4 4.3 1.05 6.1L12 20.9l-5.45 2.9 1.05-6.1L3.2 8.5l6.1-.9z"/></svg>Advocate tier</div>
+              <div class="rh-next">Next: Contributor · <b>30%</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="rh-stats">
+          <div class="hs"><div class="hl">Total earned</div><div class="hv">$442</div><div class="hsub">From referrals</div></div>
+          <div class="hs"><div class="hl">Available</div><div class="hv">$88 <button class="hclaim">Claim</button></div><div class="hsub">Ready to claim</div></div>
+          <div class="hs"><div class="hl">Paid</div><div class="hv">$354</div><div class="hsub">To your balance</div></div>
+          <div class="hs"><div class="hl">Referred vol</div><div class="hv">$354,000</div><div class="hsub">By 7 friends</div></div>
+        </div>
+      </div>
+      <div class="slider">
+        <div class="slider-scroll"><div class="s6">
+          <div class="snode done"><span class="tp">15%</span><span class="tn">Affiliate</span><div class="mark"></div><div class="cond">Default</div></div>
+          <div class="snode done"><span class="tp">20%</span><span class="tn">Ambassador</span><div class="mark"></div><div class="cond"><svg class="xico" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> + &ldquo;@SmartXTerminal&rdquo; bio</div></div>
+          <div class="snode cur"><span class="tp">25%</span><span class="tn">Advocate</span><div class="mark"></div><div class="cond">Quote-RT + Telegram</div></div>
+          <div class="snode"><span class="tp">30%</span><span class="tn">Contributor</span><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><div class="cond">5 active refs</div></div>
+          <div class="snode"><span class="tp">40%</span><span class="tn">Captain</span><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><div class="cond">20 active refs</div></div>
+          <div class="snode"><span class="tp">50%</span><span class="tn">Partner</span><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><div class="cond">50 active refs</div></div>
+        </div></div>
+      </div>
+    </div>
+
+
+    <div class="conds">
+      <div class="conds-h">How to raise your rate<span>Each one adds to your rate · do them in any order</span></div>
+      <div class="cnd done">
+        <span class="ci">✓</span>
+        <div class="ct"><div class="cl">Connect <svg class="xico" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> and add &ldquo;@SmartXTerminal&rdquo; to your bio</div><div class="m">Keep it in your bio · re-checked each season · no form</div></div>
+        <span class="cp">+5%</span>
+      </div>
+      <div class="cnd done">
+        <span class="ci">✓</span>
+        <div class="ct"><div class="cl">Post 2+ quote-retweets in the 10-day season and share your link in the Telegram group</div><div class="m">This season: 2 of 2 quote-RTs · link posted</div></div>
+        <span class="cp">+5%</span>
+      </div>
+      <div class="cnd">
+        <span class="ci"></span>
+        <div class="ct"><div class="cl">Bring in 5 active referrals</div><div class="cbar"><i style="width:60%"></i></div><div class="m">Active referral = someone you referred who traded $50+ in the 10-day season · 3 of 5 active referrals · counted on-chain</div></div>
+        <span class="cp">+5%</span>
+      </div>
+      <div class="cnd">
+        <span class="ci"></span>
+        <div class="ct"><div class="cl">Grow to 20 active referrals</div><div class="cbar"><i style="width:15%"></i></div><div class="m">3 of 20 active referrals · re-checked each season</div></div>
+        <span class="cp">+10%</span>
+      </div>
+      <div class="cnd">
+        <span class="ci"></span>
+        <div class="ct"><div class="cl">Reach 50 active referrals and become a Partner</div><div class="cbar"><i style="width:6%"></i></div><div class="m">3 of 50 active referrals · top tier, 50% share of their fees</div></div>
+        <span class="cp">+10%</span>
+      </div>
+    </div>
+
+    <div class="ref-card">
+      <div class="h">Your referral link</div>
+      <div class="linkbox"><span class="u">app.smartx.io/?ref=9KVzYsz1</span><button class="lb-share">Share link</button><button class="btn-mint">Copy</button></div>
+    </div>
+    <div class="kol">
+      <div class="l">
+        <span class="plabel" style="color:var(--mint)">Fast track · big audiences</span>
+        <div class="t">Already have a big following? Skip the ladder</div>
+      </div>
+      <a class="cta" href="#" target="_blank" rel="noopener">Talk to our partnerships team →</a>
+    </div>
+  </div>
+  </div><!-- /tab-referral -->
+
+  <div class="tabpane" id="tab-leaderboard">
+  <!-- ===== LEADERBOARD ===== -->
+  <div class="sec" id="leaderboard">
+    <div class="lbf-head">
+      <h3>SEASON LEADERBOARD</h3>
+      <span class="cnt">Season 01 · 4,912 traders</span>
+      <div class="lbf-filters"><button class="fbtn on">This season · volume</button><button class="fbtn">Last season · points</button><button class="fbtn">All-time · points</button></div>
+    </div>
+    <div class="lbf-scroll"><div class="lbf-table">
+      <div class="lbf-row head"><div>Rank</div><div>Trader</div><div>Tier</div><div>Volume</div><div>Points</div><div>Pool share</div><div>7d</div></div>
+      <div class="lbf-row"><div class="rk top">01</div><div class="who"><span class="av"></span>0xA4…91f</div><div><span class="tierpill dia">Partner</span></div><div class="num">$58,200</div><div class="num">21,040</div><div class="share"><span class="sb"><i style="width:100%"></i></span>2.10%</div><div class="trend up">▲ 2</div></div>
+      <div class="lbf-row"><div class="rk top">02</div><div class="who"><span class="av"></span>whale.eth</div><div><span class="tierpill dia">Partner</span></div><div class="num">$49,800</div><div class="num">17,410</div><div class="share"><span class="sb"><i style="width:83%"></i></span>1.74%</div><div class="trend fl">·</div></div>
+      <div class="lbf-row"><div class="rk top">03</div><div class="who"><span class="av"></span>0x7C…dd0</div><div><span class="tierpill gold">Captain</span></div><div class="num">$37,100</div><div class="num">13,120</div><div class="share"><span class="sb"><i style="width:62%"></i></span>1.31%</div><div class="trend up">▲ 5</div></div>
+      <div class="lbf-row"><div class="rk">04</div><div class="who"><span class="av"></span>sol_sniper</div><div><span class="tierpill gold">Captain</span></div><div class="num">$31,400</div><div class="num">11,050</div><div class="share"><span class="sb"><i style="width:52%"></i></span>1.10%</div><div class="trend dn">▼ 1</div></div>
+      <div class="lbf-row"><div class="rk">05</div><div class="who"><span class="av"></span>0x2E…a70</div><div><span class="tierpill gold">Captain</span></div><div class="num">$27,900</div><div class="num">9,880</div><div class="share"><span class="sb"><i style="width:47%"></i></span>0.99%</div><div class="trend up">▲ 3</div></div>
+      <div class="lbf-row"><div class="rk">06</div><div class="who"><span class="av"></span>predictor.eth</div><div><span class="tierpill amb">Advocate</span></div><div class="num">$22,300</div><div class="num">8,140</div><div class="share"><span class="sb"><i style="width:39%"></i></span>0.81%</div><div class="trend fl">·</div></div>
+      <div class="lbf-row"><div class="rk">07</div><div class="who"><span class="av"></span>0x9F…12c</div><div><span class="tierpill amb">Advocate</span></div><div class="num">$19,600</div><div class="num">7,020</div><div class="share"><span class="sb"><i style="width:33%"></i></span>0.70%</div><div class="trend up">▲ 8</div></div>
+      <div class="lbf-row more"><div class="rk">08</div><div class="who"><span class="av"></span>0x3B…7e2</div><div><span class="tierpill amb">Advocate</span></div><div class="num">$17,200</div><div class="num">6,180</div><div class="share"><span class="sb"><i style="width:31%"></i></span>0.62%</div><div class="trend up">▲ 4</div></div>
+      <div class="lbf-row more"><div class="rk">09</div><div class="who"><span class="av"></span>sunny.eth</div><div><span class="tierpill amb">Advocate</span></div><div class="num">$15,400</div><div class="num">5,520</div><div class="share"><span class="sb"><i style="width:28%"></i></span>0.55%</div><div class="trend fl">·</div></div>
+      <div class="lbf-row more"><div class="rk">10</div><div class="who"><span class="av"></span>0x8D…c19</div><div><span class="tierpill">Affiliate</span></div><div class="num">$13,900</div><div class="num">4,980</div><div class="share"><span class="sb"><i style="width:25%"></i></span>0.50%</div><div class="trend dn">▼ 2</div></div>
+      <div class="lbf-row more"><div class="rk">11</div><div class="who"><span class="av"></span>quant.eth</div><div><span class="tierpill">Affiliate</span></div><div class="num">$12,600</div><div class="num">4,510</div><div class="share"><span class="sb"><i style="width:22%"></i></span>0.45%</div><div class="trend up">▲ 6</div></div>
+      <div class="lbf-row more"><div class="rk">12</div><div class="who"><span class="av"></span>0x5A…f83</div><div><span class="tierpill">Affiliate</span></div><div class="num">$11,200</div><div class="num">4,010</div><div class="share"><span class="sb"><i style="width:20%"></i></span>0.40%</div><div class="trend up">▲ 1</div></div>
+      <div class="lbf-row more"><div class="rk">13</div><div class="who"><span class="av"></span>0x2F…a44</div><div><span class="tierpill">Affiliate</span></div><div class="num">$9,800</div><div class="num">3,510</div><div class="share"><span class="sb"><i style="width:18%"></i></span>0.35%</div><div class="trend dn">▼ 4</div></div>
+      <div class="lbf-row more"><div class="rk">14</div><div class="who"><span class="av"></span>mev.eth</div><div><span class="tierpill">Affiliate</span></div><div class="num">$8,400</div><div class="num">3,010</div><div class="share"><span class="sb"><i style="width:15%"></i></span>0.30%</div><div class="trend fl">·</div></div>
+      <div class="lbf-sep">· · ·  your neighborhood  · · ·</div>
+      <div class="lbf-row me"><div class="rk">218</div><div class="who"><span class="av"></span>You</div><div><span class="tierpill amb">Advocate</span></div><div class="num">$1,240</div><div class="num">3,240</div><div class="share"><span class="sb"><i style="width:16%"></i></span>0.32%</div><div class="trend up">▲ 12</div></div>
+      <div class="lbf-row"><div class="rk">219</div><div class="who"><span class="av"></span>0x11…b3a</div><div><span class="tierpill">Affiliate</span></div><div class="num">$1,180</div><div class="num">3,190</div><div class="share"><span class="sb"><i style="width:16%"></i></span>0.32%</div><div class="trend dn">▼ 3</div></div>
+    </div></div>
+    <div class="lbf-note">Ranked by this season's trading volume · points and pool share include tasks and referrals, so they need not track volume · 7d = rank change over the last 7 days</div>
+    <button class="lb-more-btn" data-lbmore>Show more traders ↓</button>
+  </div>
+  </div><!-- /tab-leaderboard -->
+
+  <div class="foot">SmartX · Rewards redesign mockup · season pool layered on the live task system · numbers illustrative<br><a href="https://github.com/bitgett/smartx-rewards-proposal" target="_blank" rel="noopener" style="color:var(--mint)">Design &amp; front-end code ↗</a> · private repo</div>
+  <script>
+    (function(){
+      var tabs = document.querySelectorAll('.tabs a[data-tab]');
+      var panes = document.querySelectorAll('.tabpane');
+      tabs.forEach(function(t){
+        t.addEventListener('click', function(e){
+          e.preventDefault();
+          var id = t.getAttribute('data-tab');
+          tabs.forEach(function(x){ x.classList.toggle('active', x === t); });
+          panes.forEach(function(p){ p.classList.toggle('active', p.id === 'tab-' + id); });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+
+      // nft-style pixel avatars, deterministic per trader
+      function h32(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+      function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+      function blockie(seed,mint){var r=rng(h32(seed));var hue=Math.floor(r()*360);var fg=mint?'#10dcb0':'hsl('+hue+' 64% 58%)';var fg2=mint?'#0bbf97':'hsl('+((hue+38)%360)+' 58% 50%)';var bg=mint?'#052a23':'hsl('+hue+' 42% 13%)';var c='';for(var y=0;y<5;y++)for(var x=0;x<3;x++){if(r()>0.5){var col=r()>0.62?fg2:fg;c+='<rect x="'+(x*20)+'" y="'+(y*20)+'" width="20" height="20" fill="'+col+'"/>';if(x<2)c+='<rect x="'+((4-x)*20)+'" y="'+(y*20)+'" width="20" height="20" fill="'+col+'"/>';}}return '<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="'+bg+'"/>'+c+'</svg>';}
+      document.querySelectorAll('.lbf-row .who').forEach(function(who){var av=who.querySelector('.av');if(!av)return;var name=(who.textContent||'').trim();var mint=!!who.closest('.lbf-row.me');av.innerHTML=blockie(name||'x',mint);});
+
+      // leaderboard show-more
+      var lbMore = document.querySelector('[data-lbmore]');
+      if (lbMore) lbMore.addEventListener('click', function(){
+        var tbl = document.querySelector('.lbf-table');
+        var open = tbl.classList.toggle('expanded');
+        lbMore.textContent = open ? 'Show fewer ↑' : 'Show more traders ↓';
+      });
+    })();
+  </script>
+</div>
