@@ -192,7 +192,7 @@
       <ul>
         <li><b>One season pool.</b> Every trade, referral and task feeds it, split pro-rata every 10 days, then it resets so newcomers always have a fair shot.</li>
         <li><b>Referral climbs 15% to 50%</b> of your referrals' trading fees, and you also collect 10% of every point they earn from trading and tasks.</li>
-        <li><b>A track for traders, not just recruiters.</b> Heavy traders earn a pUSD fee payback, 5 to 20% by 30-day volume, so volume is rewarded even with no referrals.</li>
+        <li><b>A track for traders, not just recruiters.</b> Heavy traders earn a pUSD fee payback, 5 to 30% by 30-day volume, so volume is rewarded even with no referrals.</li>
         <li><b>Ambassadors join from their X bio.</b> No Google Form, no spreadsheet, no review queue. Big KOLs skip the ladder and deal with BD directly.</li>
         <li><b>Points accrue toward the future SmartX token</b> (this only seeds the expectation that points may convert; no TGE plan, date, or value is stated), with a live leaderboard showing exactly where each trader stands.</li>
       </ul>
@@ -264,11 +264,12 @@
   <!-- 02 model -->
   <section id="model">
     <div class="sh"><span class="n">02 · Core model</span><h2>A season pool, split pro-rata</h2></div>
-    <p>The foundation is one fixed pool per season. <b>Season 01 runs 10 days, Jul 25 to Aug 4, with a 1,000,000 pool.</b> At the end of the season the pool is divided across every participant in proportion to the points they earned: your reward is your points over everyone's, times the pool.</p>
-    <h3 class="sub3">Why a fixed, resetting pool</h3>
+    <p>The foundation is one pool per season, set in advance. <b>Season 01 runs 10 days, Jul 25 to Aug 4, with a 1,000,000 pool.</b> The pool is also a <b>growth lever</b>: 1,000,000 is the default, but a hot window can run a <b>boosted season</b> at 2,000,000 or more. At the end of the season the pool is divided across every participant in proportion to the points they earned: your reward is your points over everyone's, times that season's pool.</p>
+    <h3 class="sub3">Why a set, resetting pool</h3>
     <ul class="bul">
       <li><b>Always a fair shot.</b> A fresh pool every 10 days means new users are never locked out by early farmers who hoarded a head start.</li>
-      <li><b>Self-balancing.</b> Fixed pool divided by more participants means smaller shares. It cannot inflate away, and it rewards showing up consistently rather than spiking once.</li>
+      <li><b>Self-balancing.</b> A set pool divided by more participants means smaller shares. It cannot inflate away, and it rewards showing up consistently rather than spiking once.</li>
+      <li><b>The pool is a lever.</b> 1,000,000 is the default, but we can raise a season's pool (say 2,000,000) to fire up a hot window. This is where the old one-off Boost now lives: no separate event, just a bigger season.</li>
       <li><b>Renewable urgency.</b> Every season is a new reason to come back. Retention is built into the clock instead of bolted on.</li>
       <li><b>Points carry, the rate re-checks on its own clock.</b> Your points add up for life across every season. The referral rate runs on a slower <b>30-day clock</b> (not the 10-day pool), so ambassadors are not forced to re-grind every single season.</li>
     </ul>
@@ -276,22 +277,22 @@
       <div class="q">Points become the future SmartX token. The conversion stays undefined, on purpose.</div>
       <p>Every point earned this season carries toward the future SmartX token. We are not putting a value, a date, or a ratio on it, and that is deliberate: it protects the upside, keeps us flexible ahead of the TGE, and starves mercenary farmers of a calculator. What stays concrete is the standing a user can see: their rank, their pool share, their tier. They feel they are building something real without us committing to a figure.</p>
     </div>
-    <h3 class="sub3">How the 1,000,000 is split</h3>
-    <p>You earn points, and the fixed 1,000,000 pool is split by each person's share of the total points earned:</p>
+    <h3 class="sub3">How the pool is split</h3>
+    <p>You earn points, and that season's pool (1,000,000 by default) is split by each person's share of the total points earned:</p>
     <div class="call cyan">
-      <div class="q">your season reward = ( your points &divide; everyone's points ) &times; 1,000,000</div>
+      <div class="q">your season reward = ( your points &divide; everyone's points ) &times; the season pool</div>
       <p>Your <b>points</b> come from three inputs: <b>trading volume</b>, <b>social &amp; task points</b>, and <b>10% of each direct referral's</b> trading and tasks. Volume counts with <b>diminishing returns</b> (a single whale does not simply dwarf everyone, and a light user who does the tasks still holds a real slice) through a concave power curve, spelled out in the spec below. Even with the formula, your reward needs everyone's live total, which stays private, so it is not a plug-in farming calculator.</p>
-      <p style="margin-top:12px"><b>Your points only ever rise.</b> The number that moves is your <b>pool share</b> (your points over everyone's), and the pool is always <b>exactly 1,000,000 per season</b> with the 10% referral bonus counted <b>inside</b> your points, never minted on top. <b>Example, illustrative:</b> hold 1% of all points and your slice is about <b>10,000</b> from the pool.</p>
+      <p style="margin-top:12px"><b>Your points only ever rise.</b> The number that moves is your <b>pool share</b> (your points over everyone's), and the pool is a <b>set amount each season</b> (1,000,000 by default) with the 10% referral bonus counted <b>inside</b> your points, never minted on top. <b>Example, illustrative:</b> hold 1% of all points and your slice is about <b>10,000</b> from a 1,000,000 pool.</p>
     </div>
     <div class="viz">
-      <div class="viz-cap">How the 1,000,000 divides</div>
+      <div class="viz-cap">How the pool divides</div>
       <div class="mbar">
-        <div class="mbar-top"><span class="l">1,000,000-point pool, one season</span><span class="r">cumulative volume, concave curve</span></div>
+        <div class="mbar-top"><span class="l">season pool (1,000,000 default)</span><span class="r">cumulative volume, concave curve</span></div>
         <div class="mbar-track">
           <div class="mseg tasks"><span class="k">Social &amp; tasks</span><span class="v">fixed points</span></div>
           <div class="mseg vol"><span class="k">Trading volume (diminishing) + referral 10%</span><span class="v">by share</span></div>
         </div>
-        <div class="mbar-eq"><span class="tk">volume (diminishing)</span> <span class="op">+</span> <span class="vl">social &amp; tasks</span> <span class="op">+</span> <span class="vl">10% of referrals'</span> <span class="op">=</span> your points &nbsp;<span class="op">&rarr;</span>&nbsp; <span class="op">share of the</span> 1,000,000 pool</div>
+        <div class="mbar-eq"><span class="tk">volume (diminishing)</span> <span class="op">+</span> <span class="vl">social &amp; tasks</span> <span class="op">+</span> <span class="vl">10% of referrals'</span> <span class="op">=</span> your points &nbsp;<span class="op">&rarr;</span>&nbsp; <span class="op">share of the</span> season pool</div>
       </div>
     </div>
     <p class="qnote"><b>Can your point total drop when other people earn?</b> No, it only rises. Your <b>pool share %</b> is the number that moves as others out-earn you, and what each share is worth settles at season close.</p>
@@ -310,7 +311,7 @@
     </ul>
     <div class="call cash">
       <div class="q">Boost lives inside the pool now.</div>
-      <p>Boost is retired. Its energy carries into the pool itself: active trading always earns pool share, so there is no separate event to enter or miss.</p>
+      <p>Boost is retired as a separate event. Its energy now lives in the season pool: active trading always earns share, and when we want a hot window we simply <b>raise the pool</b> (say to 2,000,000) instead of running a one-off giveaway.</p>
     </div>
     <p class="qnote"><b>Do daily and weekly tasks reset when the season does?</b> No. Dailies reset every 24h and weeklies every 7 days, on their own clocks. The season is a separate 10-day cycle for the pool and the referral rate.</p>
     <p class="qnote"><b>How is trading volume measured?</b> Notional volume traded, read on-chain, then passed through the diminishing-returns curve. <b>Default:</b> your volume is the notional of your own fills, counted once (in a matched trade the maker and taker each count their own side). <span class="tc">team to confirm</span></p>
@@ -371,15 +372,17 @@
     <div class="tbl"><table>
       <thead><tr><th>30-day volume</th><th>Tier</th><th>Fee payback</th><th>Perks</th></tr></thead>
       <tbody>
-        <tr><td><span class="rate">$200k+</span></td><td><span class="tier">Circle</span></td><td><span class="rate">20%</span></td><td>World-travel incentive, VIP gathering, exclusive merch, badge, plus a <b>direct Telegram line to the SmartX team</b>.</td></tr>
-        <tr><td><span class="rate">$50k+</span></td><td><span class="tier">VIP</span></td><td><span class="rate">10%</span></td><td>Merch, event invite, badge, priority Telegram support.</td></tr>
-        <tr><td><span class="rate">$20k+</span></td><td><span class="tier">Trader</span></td><td><span class="rate">5%</span></td><td>Badge.</td></tr>
+        <tr><td><span class="rate">$500k+</span></td><td><span class="tier">Circle</span></td><td><span class="rate">30%</span></td><td>World-travel incentive, VIP gathering, exclusive merch, badge, plus a <b>direct Telegram line to the SmartX team</b>.</td></tr>
+        <tr><td><span class="rate">$200k+</span></td><td><span class="tier">Platinum</span></td><td><span class="rate">20%</span></td><td>Travel or event invite, merch, badge, priority Telegram support.</td></tr>
+        <tr><td><span class="rate">$100k+</span></td><td><span class="tier">Gold</span></td><td><span class="rate">15%</span></td><td>Merch, event invite, badge.</td></tr>
+        <tr><td><span class="rate">$50k+</span></td><td><span class="tier">Silver</span></td><td><span class="rate">10%</span></td><td>Merch, badge.</td></tr>
+        <tr><td><span class="rate">$20k+</span></td><td><span class="tier">Bronze</span></td><td><span class="rate">5%</span></td><td>Badge.</td></tr>
         <tr><td><span class="rate">Under $20k</span></td><td>&mdash;</td><td>0%</td><td>The points pool, same as everyone.</td></tr>
       </tbody>
     </table></div>
     <ul class="bul">
       <li><b>Payback, not a discount.</b> The fee stays a flat 0.5% on every trade; qualifying traders simply get a slice of what they paid back in pUSD. This keeps the fee formula clean and can never stack into a negative fee.</li>
-      <li><b>A human on the other end.</b> Circle traders ($200k+ over 30 days) get a <b>direct Telegram line</b> to the team, revealed privately inside their account once they qualify, so a whale with an issue reaches a person in minutes and the team can catch and control problems fast. VIP traders ($50k+) get priority support. Handles are never shown publicly.</li>
+      <li><b>A human on the other end.</b> Circle traders ($500k+ over 30 days) get a <b>direct Telegram line</b> to the team, revealed privately inside their account once they qualify, so a whale with an issue reaches a person in minutes and the team can catch and control problems fast. Platinum traders ($200k+) get priority support. Handles are never shown publicly.</li>
       <li><b>Anti-farm on the expensive end.</b> Travel and gatherings are gated on genuine volume (net deposits, unique counterparties) plus a manual check, so wash volume cannot buy a trip. Circle is the smallest cohort, so vetting stays light.</li>
       <li><b>Status only, never the pool.</b> VIP tier does not touch your points, so it cannot double-dip the 1,000,000.</li>
     </ul>
@@ -388,7 +391,7 @@
     <p>Referral rebate, KOL links, and VIP payback all touch the trading fee, which sounds tangled. Paying everything as a payback keeps it simple: <b>the full 0.5% fee is always collected, then paid out as independent shares of that same fee.</b></p>
     <div class="call cyan">
       <div class="q">full fee in &rarr; independent shares out &rarr; platform floor stays positive</div>
-      <p>From every fee: the <b>referrer</b> gets their rebate (15 to 50%), the <b>trader</b> gets their VIP payback (0 to 20% by 30-day volume), and the <b>platform</b> keeps the rest. No multiplying, no nesting, no negative fee. Worst case, 50% referral + 20% VIP = 70% out, so the platform always keeps at least 30%.</p>
+      <p>From every fee: the <b>referrer</b> gets their rebate (15 to 50%), the <b>trader</b> gets their VIP payback (0 to 30% by 30-day volume), and the <b>platform</b> keeps the rest. No multiplying, no nesting, no negative fee. Worst case, 50% referral + 30% VIP = 80% out, so the platform always keeps at least 20%.</p>
     </div>
 
     <h3 class="sub3">KOL discount links, a real selling point</h3>
@@ -399,12 +402,12 @@
     </div>
     <ul class="bul">
       <li><b>Self-funding rule.</b> A link can only pay out of the rebate the referrer actually earns on that invitee, capped at their own rate. Self-referrals earn no rebate, so a self or sybil link pays <b>zero</b>, which kills the "discount yourself" exploit at the root.</li>
-      <li><b>Total payback cap, 35%.</b> A KOL discount (up to 15%) and a VIP payback (up to 20%) can both land on one trader, up to 35% of the fee combined. The discount is referrer-funded and the VIP is platform-funded, so even at the ceiling the platform floor still holds.</li>
+      <li><b>Total payback cap, 35%.</b> A KOL discount (up to 15%) and a VIP payback (up to 30%) can both land on one trader, so their total is capped at 35% of the fee: the discount (referrer-funded) pays in full, then the VIP (platform-funded) fills the rest. The platform floor still holds.</li>
       <li><b>Advocate tier and up (25%+).</b> Discount links unlock only for referrers at 25% or higher, so only people with real rate to share can issue them, not every user. BD can also fast-track a KOL straight to Partner.</li>
     </ul>
 
     <p class="qnote"><b>Can a KOL link drain the platform, or discount yourself?</b> No to both. A link pays only out of the referrer's <b>own rebate</b> on that invitee, capped at their rate. Self and sybil referrals earn no rebate, so their link pays zero.</p>
-    <p class="qnote"><b>Walk me through the fee on one trade.</b> $10 fee, referred by a 25% Advocate. If the trader is Circle (20% VIP): referrer $2.50, trader $2.00 back in pUSD, platform $5.50. If instead they came through that Advocate's 15%-off link and are Circle: discount $1.50 + VIP $2.00 = $3.50, right at the 35% cap (no trim), so invitee $3.50, referrer $1.00, platform $5.50. Every part is a share of the same $10, never negative.</p>
+    <p class="qnote"><b>Walk me through the fee on one trade.</b> $10 fee, referred by a 25% Advocate. If the trader is Circle (30% VIP): referrer $2.50, trader $3.00 back in pUSD, platform $4.50. If instead they came through that Advocate's 15%-off link and are Circle: discount $1.50 + VIP capped to $2.00 (15% + 20% = the 35% cap), so invitee $3.50, referrer $1.00, platform $5.50. Every part is a share of the same $10, never negative.</p>
   </section>
 
   <!-- 06 leaderboard -->
@@ -468,31 +471,31 @@
     <h3 class="sub3">Season</h3>
     <ul class="bul">
       <li><b>Length 10 days.</b> Season 01 runs Jul 25 to Aug 4 (UTC). Season 02 starts the instant Season 01 closes, back to back with no gap.</li>
-      <li><b>Auto-settlement.</b> At the exact 10-day mark the season closes: the 1,000,000 pool is split by each user's final pool share, and their points lock into the lifetime total.</li>
+      <li><b>Auto-settlement.</b> At the exact 10-day mark the season closes: that season's pool is split by each user's final pool share, and the resulting <b>reward (share &times; pool) banks into their lifetime total</b>.</li>
     </ul>
 
     <h3 class="sub3">Pool &amp; points</h3>
     <ul class="bul cyan">
-      <li><b>Fixed pool, split by share.</b> A 1,000,000 pool per season, handed out by each user's share of the total points earned, referral bonus included. Never minted per dollar, so it cannot inflate.</li>
-      <li><b>Points, then share.</b> Points are built from <b>trading volume</b>, <b>social &amp; task points</b>, and <b>10% of each direct referral's</b> trading and tasks. Then <span class="mono">pool share = your points &divide; &Sigma; all points</span> and <span class="mono">season reward = pool share &times; 1,000,000</span>.</li>
-      <li><b>The volume curve.</b> Notional enters as a concave power curve, <span class="mono">volume points = 7.85 &times; (season volume)^0.6</span>, applied to <b>cumulative</b> season volume, not per trade, so splitting one big trade into many earns nothing extra.</li>
-      <li><b>Coefficients (config-tunable).</b> Curvature <span class="mono">&alpha; = 0.6</span>, balance <span class="mono">C = 7.85</span>, set so <b>$5,000 of volume ties a full task season</b> (about 1,300 points). A whale does not dwarf the board and a task-only user still holds a real slice.</li>
+      <li><b>Pool per season, split by share.</b> A pool each season, <b>1,000,000 by default and adjustable up for a boosted season</b>, handed out by each user's share of the total points earned, referral bonus included. Never minted per dollar, so it cannot inflate.</li>
+      <li><b>Points, then share.</b> Points are built from <b>trading volume</b>, <b>social &amp; task points</b>, and <b>10% of each direct referral's</b> trading and tasks. Then <span class="mono">pool share = your points &divide; &Sigma; all points</span> and <span class="mono">season reward = pool share &times; the season pool</span>.</li>
+      <li><b>The volume curve.</b> Notional enters as a concave power curve, <span class="mono">volume points = 2.19 &times; (effective volume)^0.75</span>, applied to <b>cumulative</b> season volume, not per trade, so splitting one big trade into many earns nothing extra.</li>
+      <li><b>Coefficients (config-tunable).</b> Curvature <span class="mono">&alpha; = 0.75</span>, balance <span class="mono">C = 2.19</span>, set so <b>$5,000 of volume ties a full task season</b> (about 1,300 points). The curve still tapers, but is <b>tilted to reward heavy traders</b>: a whale earns a lot more than a small trader without simply erasing tasks.</li>
     </ul>
     <div class="tbl"><table>
       <thead><tr><th>Season volume</th><th>Volume points</th><th>vs a task-only user (~1,300)</th></tr></thead>
       <tbody>
-        <tr><td>$1,000</td><td>~500</td><td>below a grinder</td></tr>
+        <tr><td>$1,000</td><td>~390</td><td>below a grinder</td></tr>
         <tr><td>$5,000</td><td>~1,300</td><td>ties a grinder</td></tr>
-        <tr><td>$10,000</td><td>~1,970</td><td>1.5&times;</td></tr>
-        <tr><td>$100,000</td><td>~7,850</td><td>6&times;</td></tr>
-        <tr><td>$1,000,000</td><td>~31,250</td><td>24&times; (200&times; the volume, 24&times; the points)</td></tr>
+        <tr><td>$10,000</td><td>~2,190</td><td>1.7&times;</td></tr>
+        <tr><td>$100,000</td><td>~12,300</td><td>9.5&times;</td></tr>
+        <tr><td>$1,000,000</td><td>~69,250</td><td>53&times; (200&times; the volume, 53&times; the points)</td></tr>
       </tbody>
     </table></div>
     <ul class="bul cyan">
-      <li><b>Anti-farm.</b> Cumulative volume (splitting is useless) and a <b>quality-adjusted input</b> (wash-like patterns dampened before the curve). And even with the formula public, a user's <b>reward</b> needs everyone's live total, which is not published, so it is not a plug-in farming calculator.</li>
+      <li><b>Anti-farm, and what effective volume is.</b> <b>Launch (v1):</b> effective volume = raw notional minus obvious self-trades and A-to-B circular trades. Sophisticated quality-weighting (win rate, holding time, maker ratio) is <b>Phase 2</b>. The economics already make wash weak: it runs on <b>cumulative</b> volume (splitting is useless), washing $1,000,000 pays $5,000 in fees for a sublinear point gain, and the pool is fixed so a washer only dilutes their own share. And even public, the formula is not a plug-in calculator, since a reward needs everyone's live total.</li>
       <li><b>Tunable at launch.</b> &alpha; and C are config values. Before Season 01, run a sensitivity pass over the expected volume distribution (what the top 1% takes, what a task-only user holds) and adjust, no redeploy.</li>
       <li><b>Points only rise.</b> A user's point total only ever goes up as they earn; the live <b>pool share %</b> is the number that moves as others earn. What each share is worth settles at season close; the point total itself never falls.</li>
-      <li><b>Lifetime total.</b> Each season's finalized points add to a permanent lifetime total (Season 01 + 02 + …). Per-season points reset for each new pool; the lifetime total never resets.</li>
+      <li><b>Lifetime = banked rewards.</b> At close, each season's <b>reward (share &times; that season's pool)</b> banks to a permanent lifetime total. Per-season points reset to zero for the next pool; lifetime never resets. Because each season mints exactly its pool, the token basis stays bounded: everyone's lifetime totals sum to the sum of every season's pool.</li>
     </ul>
 
     <h3 class="sub3">Fees &amp; rebate</h3>
@@ -529,9 +532,9 @@
 
     <h3 class="sub3">VIP payback (trader track)</h3>
     <ul class="bul">
-      <li><b>Tier by trailing 30-day volume, re-checked daily.</b> $200k+ Circle 20%, $50k+ VIP 10%, $20k+ Trader 5%, under $20k 0%. Same notional volume the leaderboard uses.</li>
+      <li><b>Tier by trailing 30-day volume, re-checked daily.</b> $500k+ Circle 30%, $200k+ Platinum 20%, $100k+ Gold 15%, $50k+ Silver 10%, $20k+ Bronze 5%, under $20k 0%. Same notional volume the leaderboard uses.</li>
       <li><b>Forward-only, no clawback.</b> Each trade earns payback at the tier held <b>at that trade</b>, credited in pUSD to the trading balance. Crossing a threshold does not re-price past fees; dropping below never reverses payback already paid.</li>
-      <li><b>Total payback cap, 35%.</b> When a KOL discount and a VIP payback land on the same trade, the invitee's total is capped at 35% of the fee: <span class="mono">VIP payback = min( tier %, 35% &minus; discount % )</span>. With current tiers (15% max discount + 20% max VIP = 35%) the ceiling is never binding, so a Circle VIP keeps the full payback even through a discount link. The platform floor still holds.</li>
+      <li><b>Total payback cap, 35%.</b> When a KOL discount and a VIP payback land on the same trade, the invitee's total is capped at 35% of the fee: <span class="mono">VIP payback = min( tier %, 35% &minus; discount % )</span>. Example: a Circle trader (30%) through a 15%-off link gets VIP trimmed to 20%, so 15% + 20% = 35%. The platform floor still holds.</li>
       <li><b>Never touches the pool.</b> Payback is a pUSD fee rebate; it does not add to points or pool share, so it cannot double-dip the 1,000,000.</li>
       <li><b>Payout cadence.</b> Default: accrues per trade at the tier held, credited daily in pUSD, the same rail as the referral rebate. <span class="tc">team to confirm</span></li>
     </ul>
