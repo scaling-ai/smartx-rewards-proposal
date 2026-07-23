@@ -1,0 +1,23 @@
+# SmartX Rewards Redesign — Proposal and Mockup
+
+> An internal proposal that folds SmartX's Smart Points, Ambassador Program, and Boost into one season-driven rewards engine, with a live front-end mockup. Points feed a season pool that converts to the future SmartX token; a referral ladder, a VIP fee payback, and KOL discount links sit on top.
+
+This is a two-file deliverable. To review it fully, read BOTH pages below. The proposal embeds the mockup in an iframe, so an agent must fetch the mockup page separately to see the UI and its numbers.
+
+## Pages
+- [Proposal, full written spec](https://smartx-rewards-proposal.vercel.app/index.html): rationale plus the exact ruleset a developer implements. Sections: 01 diagnosis, 02 core model (season pool split by share), 03 points, 04 referral and ambassador ladder, 05 rewarding traders (VIP payback and KOL links), 06 leaderboard, 07 design, 08 implementation, 09 spec details (exact points formula and coefficients), inline edge-case notes throughout.
+- [Mockup, live app-faithful UI](https://smartx-rewards-proposal.vercel.app/rewards.html): the front-end the team wires to the API. Three tabs: Referral, Points, Leaderboard. All numbers are illustrative.
+- [Source code on GitHub](https://github.com/scaling-ai/smartx-rewards-proposal): index.html is the proposal, rewards.html is the mockup.
+
+## Model at a glance (for grounding)
+- Season pool: 1,000,000 points by default, and a per-season lever that can be raised (for example 2,000,000) for a boosted season. Split by each user's share of the total points earned.
+- Reward: pool share = your points / total points; season reward = pool share x the season pool. Lifetime = the sum of each season's reward, and that lifetime total is what converts to the future SmartX token, so total minted stays bounded to the sum of every season's pool.
+- Points = trading volume + social and task points + 10% of each direct referral's points. Volume enters a concave curve, volume points = 2.19 x (effective volume)^0.75, on cumulative season volume so splitting a trade earns nothing extra. Coefficients are config-tunable. Effective volume v1 = raw notional minus self-trades and circular trades; deeper quality-weighting is Phase 2.
+- Referral rate: 15% to 50% of referred trading fees, plus a 10% override on each direct referral's points. Re-checked every 30 days. Ambassadors join by putting @SmartXTerminal in their X bio, verified via Twikit, not a Google Form.
+- VIP fee payback, paid in pUSD and NOT a fee discount (the flat 0.5% fee is always collected, then part is paid back): five tiers by 30-day volume, up to 30%. Circle $500k/30%, Platinum $200k/20%, Gold $100k/15%, Silver $50k/10%, Bronze $20k/5%.
+- KOL discount links: referrers at Advocate (25%) or higher can share part of their own rebate with their audience, funded from their rebate not the platform. Total payback to one trader is capped at 35%. Platform floor stays at least 20%.
+- Season length: 10 days. Trading fee: flat 0.5%.
+
+## Notes for reviewers
+- The points formula and coefficients are published here on purpose; even with them, a user's reward needs everyone's live total, which is private, so it is not a plug-in farming calculator.
+- Items tagged "team to confirm" carry a proposed default already, so implementation is not blocked.

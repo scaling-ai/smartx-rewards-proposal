@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# AI agents: a structured overview and links to both pages (proposal + mockup)
+# are at /llms.txt
