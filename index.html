@@ -17,7 +17,7 @@
     --mono: "JetBrains Mono", "Cascadia Mono", ui-monospace, "SF Mono", Consolas, monospace;
     --sans: "Inter", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     --display: "Space Grotesk", "Inter", system-ui, sans-serif;
-    --read: 1040px;
+    --read: 1200px;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -30,6 +30,12 @@
   .mono { font-family: var(--mono); }
   .tnum { font-family: var(--mono); font-variant-numeric: tabular-nums; }
   .wrap { max-width: var(--read); margin: 0 auto; padding: 0 26px; }
+  /* comfortable reading measure for prose; tables, viz, frame stay full width */
+  header .lede, section > p, ul.bul, section > h3.sub3, .call, .qnote { max-width: 730px; }
+  /* inline clarification note, woven into the body instead of a big FAQ */
+  .qnote { margin: 15px 0; padding: 2px 0 2px 16px; border-left: 2px solid var(--line2); font-size: 14.5px; color: var(--ink2); line-height: 1.6; }
+  .qnote b { color: var(--ink); font-weight: 650; }
+  .qnote + .qnote { margin-top: 10px; }
   .plabel { font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
 
   nav { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 14px; height: 56px; padding: 0 26px; background: #0b0e0d; border-bottom: 1px solid rgba(255,255,255,.08); }
@@ -149,16 +155,8 @@
   .lstep.base .lbar { background: linear-gradient(180deg, #cbd5d1, #e3eae7); border-color: var(--line2); }
   .lstep.base .pct { color: var(--ink2); }
 
-  /* FAQ / edge cases */
-  .faqgrp { margin: 10px 0 20px; }
-  .faq { display: grid; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-  .qa { padding: 15px 18px; background: var(--panel); border-top: 1px solid var(--line); }
-  .qa:first-child { border-top: none; }
-  .qq { font-family: var(--display); font-weight: 600; color: var(--ink); font-size: 15.5px; margin-bottom: 5px; display: flex; gap: 9px; }
-  .qq::before { content: "Q"; font-family: var(--mono); color: var(--cyan); font-weight: 700; flex: none; }
-  .aa { color: var(--ink2); font-size: 14.5px; padding-left: 22px; }
-  .aa b { color: var(--ink); font-weight: 650; }
-  .aa .tc { font-family: var(--mono); font-size: 11px; color: var(--cash); background: #bd7f1614; border: 1px solid rgba(189,127,22,.4); border-radius: 5px; padding: 1px 7px; margin-left: 6px; white-space: nowrap; }
+  /* team-to-confirm tag, used inline in qnotes */
+  .tc { font-family: var(--mono); font-size: 11px; color: var(--cash); background: #bd7f1614; border: 1px solid rgba(189,127,22,.4); border-radius: 5px; padding: 1px 7px; margin-left: 4px; white-space: nowrap; }
 
   @media (max-width: 640px){
     nav { gap: 10px; padding: 0 16px; }
@@ -187,13 +185,14 @@
 <div class="wrap" id="top">
   <header>
     <span class="plabel">Internal Proposal · Growth</span>
-    <h1>Rewards, rebuilt<br>as <em>one engine.</em></h1>
-    <p class="lede">This proposal folds Smart Points and the Ambassador Program into a single, season-driven loop and retires the one-off Boost giveaway. One pool that every action feeds, a referral rate that climbs from 15% to 50% of referred trading fees, ambassadors who join from their X bio with no Google Form, and a public leaderboard so every trader can see where they stand. Points accrue toward the future SmartX token. Below is the full rationale, every mechanic, and a live working front-end the team can wire straight to the API.</p>
+    <h1>Rewards, rebuilt as <em>one engine.</em></h1>
+    <p class="lede">This proposal folds Smart Points and the Ambassador Program into a single, season-driven loop and retires the one-off Boost giveaway. One pool that every action feeds, a referral rate that climbs from 15% to 50% of referred trading fees, a pUSD payback that rewards heavy traders directly, ambassadors who join from their X bio with no Google Form, and a public leaderboard so every trader can see where they stand. Points accrue toward the future SmartX token. Below is the full rationale, every mechanic, and a live working front-end the team can wire straight to the API.</p>
     <div class="tldr">
       <div class="h">TL;DR</div>
       <ul>
         <li><b>One season pool.</b> Every trade, referral and task feeds it, split pro-rata every 10 days, then it resets so newcomers always have a fair shot.</li>
         <li><b>Referral climbs 15% to 50%</b> of your referrals' trading fees, and you also collect 10% of every point they earn from trading and tasks.</li>
+        <li><b>A track for traders, not just recruiters.</b> Heavy traders earn a pUSD fee payback, 5 to 20% by 30-day volume, so volume is rewarded even with no referrals.</li>
         <li><b>Ambassadors join from their X bio.</b> No Google Form, no spreadsheet, no review queue. Big KOLs skip the ladder and deal with BD directly.</li>
         <li><b>Points accrue toward the future SmartX token</b> (this only seeds the expectation that points may convert; no TGE plan, date, or value is stated), with a live leaderboard showing exactly where each trader stands.</li>
       </ul>
@@ -265,36 +264,38 @@
   <!-- 02 model -->
   <section id="model">
     <div class="sh"><span class="n">02 · Core model</span><h2>A season pool, split pro-rata</h2></div>
-    <p>The foundation is one fixed pool per season. <b>Season 01 runs 10 days, Jul 25 to Aug 4, with 1,000,000 points.</b> At the end of the season the pool is divided across every participant in proportion to the points they earned: your points are your share of the season's total.</p>
+    <p>The foundation is one fixed pool per season. <b>Season 01 runs 10 days, Jul 25 to Aug 4, with a 1,000,000 pool.</b> At the end of the season the pool is divided across every participant in proportion to the points they earned: your reward is your points over everyone's, times the pool.</p>
     <h3 class="sub3">Why a fixed, resetting pool</h3>
     <ul class="bul">
       <li><b>Always a fair shot.</b> A fresh pool every 10 days means new users are never locked out by early farmers who hoarded a head start.</li>
       <li><b>Self-balancing.</b> Fixed pool divided by more participants means smaller shares. It cannot inflate away, and it rewards showing up consistently rather than spiking once.</li>
       <li><b>Renewable urgency.</b> Every season is a new reason to come back. Retention is built into the clock instead of bolted on.</li>
-      <li><b>Points carry, the rate re-checks.</b> Your points add up for life across every season, while your referral rate is re-evaluated each 10 days so it always reflects your recent activity.</li>
+      <li><b>Points carry, the rate re-checks on its own clock.</b> Your points add up for life across every season. The referral rate runs on a slower <b>30-day clock</b> (not the 10-day pool), so ambassadors are not forced to re-grind every single season.</li>
     </ul>
     <div class="call cash">
       <div class="q">Points become the future SmartX token. The conversion stays undefined, on purpose.</div>
       <p>Every point earned this season carries toward the future SmartX token. We are not putting a value, a date, or a ratio on it, and that is deliberate: it protects the upside, keeps us flexible ahead of the TGE, and starves mercenary farmers of a calculator. What stays concrete is the standing a user can see: their rank, their pool share, their tier. They feel they are building something real without us committing to a figure.</p>
     </div>
     <h3 class="sub3">How the 1,000,000 is split</h3>
-    <p>One share formula, and it always adds up to exactly the pool, referral bonus included:</p>
+    <p>You earn points, and the fixed 1,000,000 pool is split by each person's share of the total points earned:</p>
     <div class="call cyan">
-      <div class="q">your points = ( your weight &divide; everyone's weight ) &times; 1,000,000</div>
-      <p><b>your weight = social &amp; task points + your trading volume + 10% of each direct referral's (social + volume).</b> Social and task points are the fixed amounts from the table, trading adds your volume, and referrals add 10% of what your direct invitees put in. No hidden multipliers, no "$X = 1 point" rate.</p>
-      <p style="margin-top:12px">Because everyone takes a share of the same fixed 1,000,000, <b>social points, volume, and every 10% referral bonus add up to exactly 1,000,000</b>. The 10% is <b>inside</b> the pool, never on top. <b>Example, illustrative:</b> hold 1% of all the weight and your slice is about <b>10,000 points</b>.</p>
+      <div class="q">your season reward = ( your points &divide; everyone's points ) &times; 1,000,000</div>
+      <p>Your <b>points</b> come from three inputs: <b>trading volume</b>, <b>social &amp; task points</b>, and <b>10% of each direct referral's</b> trading and tasks. Volume counts with <b>diminishing returns</b> (a single whale does not simply dwarf everyone, and a light user who does the tasks still holds a real slice) through a concave power curve, spelled out in the spec below. Even with the formula, your reward needs everyone's live total, which stays private, so it is not a plug-in farming calculator.</p>
+      <p style="margin-top:12px"><b>Your points only ever rise.</b> The number that moves is your <b>pool share</b> (your points over everyone's), and the pool is always <b>exactly 1,000,000 per season</b> with the 10% referral bonus counted <b>inside</b> your points, never minted on top. <b>Example, illustrative:</b> hold 1% of all points and your slice is about <b>10,000</b> from the pool.</p>
     </div>
     <div class="viz">
       <div class="viz-cap">How the 1,000,000 divides</div>
       <div class="mbar">
-        <div class="mbar-top"><span class="l">1,000,000-point pool, one season</span><span class="r">= 100%</span></div>
+        <div class="mbar-top"><span class="l">1,000,000-point pool, one season</span><span class="r">cumulative volume, concave curve</span></div>
         <div class="mbar-track">
           <div class="mseg tasks"><span class="k">Social &amp; tasks</span><span class="v">fixed points</span></div>
-          <div class="mseg vol"><span class="k">Trading volume + your referral 10%</span><span class="v">by share</span></div>
+          <div class="mseg vol"><span class="k">Trading volume (diminishing) + referral 10%</span><span class="v">by share</span></div>
         </div>
-        <div class="mbar-eq"><span class="tk">social</span> <span class="op">+</span> <span class="vl">volume</span> <span class="op">+</span> <span class="vl">10% of referrals'</span> <span class="op">=</span> your weight &nbsp;<span class="op">&rarr;</span>&nbsp; <span class="op">share of</span> 1,000,000 <span class="op">(10% included, not on top)</span></div>
+        <div class="mbar-eq"><span class="tk">volume (diminishing)</span> <span class="op">+</span> <span class="vl">social &amp; tasks</span> <span class="op">+</span> <span class="vl">10% of referrals'</span> <span class="op">=</span> your points &nbsp;<span class="op">&rarr;</span>&nbsp; <span class="op">share of the</span> 1,000,000 pool</div>
       </div>
     </div>
+    <p class="qnote"><b>Can your point total drop when other people earn?</b> No, it only rises. Your <b>pool share %</b> is the number that moves as others out-earn you, and what each share is worth settles at season close.</p>
+    <p class="qnote"><b>A trade lands right on the 10-day boundary.</b> It counts in the season it <b>settles</b> in (UTC). Season 02 starts the instant Season 01 closes, back to back with no gap.</p>
   </section>
 
   <!-- 03 points -->
@@ -308,9 +309,11 @@
       <li><b>Your network earns you points.</b> You collect <b style="color:var(--mint)">10% of every point your referrals earn from trading and tasks</b>, so bringing in active traders keeps paying you all season, not just at sign-up.</li>
     </ul>
     <div class="call cash">
-      <div class="q">Boost now lives inside the season pool.</div>
-      <p>Boost's hot-market energy carries straight into the pool: trade during a busy market and your volume earns a bigger share, with no separate event to enter.</p>
+      <div class="q">Boost lives inside the pool now.</div>
+      <p>Boost is retired. Its energy carries into the pool itself: active trading always earns pool share, so there is no separate event to enter or miss.</p>
     </div>
+    <p class="qnote"><b>Do daily and weekly tasks reset when the season does?</b> No. Dailies reset every 24h and weeklies every 7 days, on their own clocks. The season is a separate 10-day cycle for the pool and the referral rate.</p>
+    <p class="qnote"><b>How is trading volume measured?</b> Notional volume traded, read on-chain, then passed through the diminishing-returns curve. <b>Default:</b> your volume is the notional of your own fills, counted once (in a matched trade the maker and taker each count their own side). <span class="tc">team to confirm</span></p>
   </section>
 
   <!-- 04 referral -->
@@ -319,7 +322,7 @@
     <p>The Ambassador Program stops being a separate silo and becomes the referral rate ladder, the <b style="color:var(--mint)">mint</b> world: trading and referral. The rate is a share of the <b>trading fees (a flat 0.5%) a user's referrals generate</b>, and it is not flat: it climbs from 15% to 50% as the user contributes more.</p>
     <div class="call">
       <div class="q">Referrals pay you twice</div>
-      <p>Beyond the fee rate, a user also collects <b>10% of every point their referrals earn from trading and tasks</b> as part of their pool weight. The fee share rewards the money a referral trades; the point override rewards the activity they keep putting in, all season, from direct referrals only.</p>
+      <p>Beyond the fee rate, a user also collects <b>10% of every point their referrals earn from trading and tasks</b> as part of their points. The fee share rewards the money a referral trades; the point override rewards the activity they keep putting in, all season, from direct referrals only.</p>
     </div>
     <div class="viz">
       <div class="ladder">
@@ -337,37 +340,88 @@
         <tbody>
           <tr><td><span class="tier">Affiliate</span></td><td><span class="rate">15%</span></td><td>Default. Everyone starts here.</td><td class="add">base</td></tr>
           <tr><td><span class="tier">Ambassador</span></td><td><span class="rate">20%</span></td><td>Connect X and add @SmartXTerminal to your bio.</td><td class="add">+5%</td></tr>
-          <tr><td><span class="tier">Advocate</span></td><td><span class="rate">25%</span></td><td>Post 2+ quote-retweets in the 10-day season and share your link in the Telegram group.</td><td class="add">+5%</td></tr>
-          <tr><td><span class="tier">Contributor</span></td><td><span class="rate">30%</span></td><td>5 referrals who each traded $50+ in the 10-day season.</td><td class="add">+5%</td></tr>
-          <tr><td><span class="tier">Captain</span></td><td><span class="rate">40%</span></td><td>20 referrals who each traded $50+ in the 10-day season.</td><td class="add">+10%</td></tr>
-          <tr><td><span class="tier">Partner</span></td><td><span class="rate">50%</span></td><td>50 referrals who each traded $50+ in the 10-day season.</td><td class="add">+10%</td></tr>
+          <tr><td><span class="tier">Advocate</span></td><td><span class="rate">25%</span></td><td>Post 2+ quote-retweets in the last 30 days and share your link in the Telegram group.</td><td class="add">+5%</td></tr>
+          <tr><td><span class="tier">Contributor</span></td><td><span class="rate">30%</span></td><td>5 referrals who each traded $50+ in the last 30 days.</td><td class="add">+5%</td></tr>
+          <tr><td><span class="tier">Captain</span></td><td><span class="rate">40%</span></td><td>20 referrals who each traded $50+ in the last 30 days.</td><td class="add">+10%</td></tr>
+          <tr><td><span class="tier">Partner</span></td><td><span class="rate">50%</span></td><td>50 referrals who each traded $50+ in the last 30 days.</td><td class="add">+10%</td></tr>
         </tbody>
       </table>
     </div>
     <h3 class="sub3">Order-independent, additive</h3>
     <p>These are not a strict sequence. <b>Each condition adds to the rate and can be completed in any order</b>: a large referrer can hit the 20-referral step for +10% without doing the quote-retweet step first. A user's rate is 15% plus everything they have completed, up to 50%.</p>
     <h3 class="sub3">No Google Form</h3>
-    <p>Referral counts and volume are already on-chain, so eligibility is verified <b>automatically</b>. A user connects X <b>once</b>; the bio and quote-retweets are then read through that connection and <b>re-checked each season</b>, with no form to fill. A user is either in, or shown exactly what is left to qualify.</p>
+    <p>Referral counts and volume are already on-chain, so eligibility is verified <b>automatically</b>. A user connects X <b>once</b>; the bio and quote-retweets are then read through <b>Twikit</b> (no paid X API) and <b>re-checked every 30 days</b>, with no form to fill. A user is either in, or shown exactly what is left to qualify.</p>
     <h3 class="sub3">A fast track for large KOLs</h3>
     <p>KOLs with a big following will not grind the ladder, and they do not have to. They <b>start at Partner, up to 50% from day one</b>, with terms set directly by the BD team through a DM. Self-serve for the many, white-glove for the few.</p>
     <h3 class="sub3">Rebate is visible and claimable</h3>
     <p>The referral card shows Total earned, Available (with a Claim button), Paid, and Referred volume. Earnings <b>accrue daily into Available</b>, and the user <b>claims</b> them to their SmartX balance. The rate is a share of the trading fees on every trade a referral makes, from 15% up to 50%.</p>
+    <p class="qnote"><b>When does a referral attach to you?</b> On their <b>first deposit</b>, and it stays with you for life. Self-referrals and circular referrals (A refers B, B refers A) do not count.</p>
+    <p class="qnote"><b>What makes a referral "active"?</b> $50 or more in trading volume in the last 30 days. The bar filters empty sign-ups, so a tier only counts referrals who actually trade.</p>
+    <p class="qnote"><b>Your rate drops at the next 30-day check. Are past rebates clawed back?</b> No. Rebate is paid at the rate in force <b>at the time of each trade</b>; earned rebate is never reversed.</p>
+    <p class="qnote"><b>What currency is the rebate, and is there a minimum?</b> <b>Default:</b> pUSD, the same asset as the VIP payback, credited to the trading balance, with no minimum to accrue. <span class="tc">team to confirm</span></p>
   </section>
 
-  <!-- 05 leaderboard -->
+  <!-- 05 rewarding traders -->
+  <section id="traders">
+    <div class="sh mint"><span class="n">05 · Rewarding traders</span><h2>A track for whales, not just recruiters</h2></div>
+    <p>The referral ladder rewards <b>bringing people in</b>. Trading volume already earns points, but a heavy trader who refers no one still sits at 15% with no status and no perk. So we add a second track keyed to trading, paid as a <b>fee payback in pUSD</b>, so the fee itself never has to change.</p>
+
+    <h3 class="sub3">VIP tiers, by 30-day volume</h3>
+    <p>Keyed to a trader's trailing 30-day volume, so anyone who trades enough qualifies, not just the top of a leaderboard. The payback is a share of the fees they already paid, returned in <b>pUSD</b> to their trading balance, so the cost scales with revenue and can never exceed it.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>30-day volume</th><th>Tier</th><th>Fee payback</th><th>Perks</th></tr></thead>
+      <tbody>
+        <tr><td><span class="rate">$200k+</span></td><td><span class="tier">Circle</span></td><td><span class="rate">20%</span></td><td>World-travel incentive, VIP gathering, exclusive merch, badge, plus a <b>direct Telegram line to the SmartX team</b>.</td></tr>
+        <tr><td><span class="rate">$50k+</span></td><td><span class="tier">VIP</span></td><td><span class="rate">10%</span></td><td>Merch, event invite, badge, priority Telegram support.</td></tr>
+        <tr><td><span class="rate">$20k+</span></td><td><span class="tier">Trader</span></td><td><span class="rate">5%</span></td><td>Badge.</td></tr>
+        <tr><td><span class="rate">Under $20k</span></td><td>&mdash;</td><td>0%</td><td>The points pool, same as everyone.</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="bul">
+      <li><b>Payback, not a discount.</b> The fee stays a flat 0.5% on every trade; qualifying traders simply get a slice of what they paid back in pUSD. This keeps the fee formula clean and can never stack into a negative fee.</li>
+      <li><b>A human on the other end.</b> Circle traders ($200k+ over 30 days) get a <b>direct Telegram line</b> to the team, revealed privately inside their account once they qualify, so a whale with an issue reaches a person in minutes and the team can catch and control problems fast. VIP traders ($50k+) get priority support. Handles are never shown publicly.</li>
+      <li><b>Anti-farm on the expensive end.</b> Travel and gatherings are gated on genuine volume (net deposits, unique counterparties) plus a manual check, so wash volume cannot buy a trip. Circle is the smallest cohort, so vetting stays light.</li>
+      <li><b>Status only, never the pool.</b> VIP tier does not touch your points, so it cannot double-dip the 1,000,000.</li>
+    </ul>
+
+    <h3 class="sub3">One fee, split cleanly</h3>
+    <p>Referral rebate, KOL links, and VIP payback all touch the trading fee, which sounds tangled. Paying everything as a payback keeps it simple: <b>the full 0.5% fee is always collected, then paid out as independent shares of that same fee.</b></p>
+    <div class="call cyan">
+      <div class="q">full fee in &rarr; independent shares out &rarr; platform floor stays positive</div>
+      <p>From every fee: the <b>referrer</b> gets their rebate (15 to 50%), the <b>trader</b> gets their VIP payback (0 to 20% by 30-day volume), and the <b>platform</b> keeps the rest. No multiplying, no nesting, no negative fee. Worst case, 50% referral + 20% VIP = 70% out, so the platform always keeps at least 30%.</p>
+    </div>
+
+    <h3 class="sub3">KOL discount links, a real selling point</h3>
+    <p>Today a referral only rewards the <b>referrer</b>, so a KOL has nothing to offer their audience. We let referrers at <b>Advocate (25%) or higher</b> cut their audience in: they can issue up to <b>three</b> links, for example plain, <b>10% off</b>, and <b>15% off</b>. The discount is delivered the same clean way, as a pUSD payback to the invitee.</p>
+    <div class="call">
+      <div class="q">The KOL funds it from their own rebate, so the platform pays nothing</div>
+      <p>A 10% link moves 10 points of the referrer's rate to the invitee. A 25% Advocate who issues a 10% link keeps 15%, the invitee gets 10% of their fees back, and the platform's share does not move. On a $10 fee: KOL $1.50, platform $7.50, invitee $1 back.</p>
+    </div>
+    <ul class="bul">
+      <li><b>Self-funding rule.</b> A link can only pay out of the rebate the referrer actually earns on that invitee, capped at their own rate. Self-referrals earn no rebate, so a self or sybil link pays <b>zero</b>, which kills the "discount yourself" exploit at the root.</li>
+      <li><b>Total payback cap, 35%.</b> A KOL discount (up to 15%) and a VIP payback (up to 20%) can both land on one trader, up to 35% of the fee combined. The discount is referrer-funded and the VIP is platform-funded, so even at the ceiling the platform floor still holds.</li>
+      <li><b>Advocate tier and up (25%+).</b> Discount links unlock only for referrers at 25% or higher, so only people with real rate to share can issue them, not every user. BD can also fast-track a KOL straight to Partner.</li>
+    </ul>
+
+    <p class="qnote"><b>Can a KOL link drain the platform, or discount yourself?</b> No to both. A link pays only out of the referrer's <b>own rebate</b> on that invitee, capped at their rate. Self and sybil referrals earn no rebate, so their link pays zero.</p>
+    <p class="qnote"><b>Walk me through the fee on one trade.</b> $10 fee, referred by a 25% Advocate. If the trader is Circle (20% VIP): referrer $2.50, trader $2.00 back in pUSD, platform $5.50. If instead they came through that Advocate's 15%-off link and are Circle: discount $1.50 + VIP $2.00 = $3.50, right at the 35% cap (no trim), so invitee $3.50, referrer $1.00, platform $5.50. Every part is a share of the same $10, never negative.</p>
+  </section>
+
+  <!-- 06 leaderboard -->
   <section id="leaderboard">
-    <div class="sh"><span class="n">05 · Standing</span><h2>A live leaderboard</h2></div>
+    <div class="sh"><span class="n">06 · Standing</span><h2>A live leaderboard</h2></div>
     <p>The whole ladder is public. The default board ranks by this season's trading volume, with points boards for last season and all-time, and a user's own row is highlighted so they can see exactly who is right above them and push.</p>
     <ul class="bul">
       <li><b>Columns:</b> rank, trader (with a generated pixel profile avatar), tier, volume, points, pool share, and 7-day rank movement.</li>
       <li><b>Three boards:</b> this season's trading volume, last season's final points, and all-time lifetime points, so recent form and long-term standing both show.</li>
       <li><b>Your neighborhood:</b> the rows immediately around a user are always shown, even when they are far from the top, so progress feels reachable.</li>
     </ul>
+    <p class="qnote"><b>Why can a lower-volume trader show more points than a higher-volume one?</b> Points include tasks and referral bonuses, not just volume, and the default board sorts by <b>this season's volume</b>, so the two need not line up. A footnote on the board says so.</p>
   </section>
 
   <!-- 06 design -->
   <section id="design">
-    <div class="sh"><span class="n">06 · Design</span><h2>The interface</h2></div>
+    <div class="sh"><span class="n">07 · Design</span><h2>The interface</h2></div>
     <p>Same dark SmartX terminal, same top navigation. The rewards content is rebuilt around one idea: put the season pool and a user's place in it front and center, and let everything else earn into it.</p>
     <ul class="bul">
       <li><b>Three-color system.</b> <span class="swatch" style="background:var(--mint)"></span><b style="color:var(--mint)">Mint</b> anchors trading and referral, <span class="swatch" style="background:var(--cyan)"></span><b style="color:var(--cyan)">cyan</b> anchors points and rewards, and <span class="swatch" style="background:var(--cash)"></span><b style="color:var(--cash)">gold</b> marks the future token. Each world reads apart at a glance.</li>
@@ -375,6 +429,7 @@
       <li><b>Typography.</b> A humanist sans for reading, monospace for data, numbers, and labels, on a true-black ground.</li>
       <li><b>Brand.</b> The real SmartX pixel-owl logo and header are preserved throughout.</li>
     </ul>
+    <p class="qnote"><b>What does a brand-new or disconnected wallet see?</b> Not connected: a preview with a connect / deposit prompt. Once connected and new: Affiliate at 15%, 0 points, no pool share yet, every task open to start, and the ladder showing exactly what unlocks each step.</p>
     <p class="framenote" style="text-align:left;margin:18px 0 0">Live, interactive front-end below. Scroll and switch tabs inside the frame.</p>
   </section>
 </div>
@@ -390,12 +445,12 @@
 <div class="wrap">
   <!-- 07 implementation -->
   <section id="build">
-    <div class="sh"><span class="n">07 · Implementation</span><h2>What the team builds</h2></div>
+    <div class="sh"><span class="n">08 · Implementation</span><h2>What the team builds</h2></div>
     <p>The mockup is a working static front-end, structured so it maps directly to real components and routes. To make it live, the back-end needs to provide:</p>
     <ul class="bul">
       <li><b>Task tracking</b> for the daily, weekly, and milestone tasks, with per-user progress.</li>
       <li><b>Points accrual and season distribution:</b> score each action (trades, tasks, milestones) into points, credit each referrer 10% of their referrals' points, accumulate per season, and settle the fixed pool pro-rata at season close.</li>
-      <li><b>Referral verification:</b> referral count and referred trading volume on-chain; the X connection, bio, and quote-retweets read through the connected X account and re-checked each season.</li>
+      <li><b>Referral verification:</b> referral count and referred trading volume on-chain; the X connection, bio, and quote-retweets read through <b>Twikit</b> (not the paid X API) and re-checked every 30 days, keeping the current tier if a check cannot run.</li>
       <li><b>Rate engine:</b> compute a user's referral rate as 15% plus every completed, order-independent condition, applied to referred trading fees, and account rebate as earned / available / paid, accruing daily with a user claim to balance.</li>
       <li><b>Leaderboard aggregation</b> across three boards: this season's volume, last season's points, and all-time points, each with 7-day rank movement.</li>
     </ul>
@@ -407,22 +462,37 @@
 
   <!-- 08 spec details -->
   <section id="spec">
-    <div class="sh cyan"><span class="n">08 · Spec details</span><h2>Every rule, pinned for the build</h2></div>
+    <div class="sh cyan"><span class="n">09 · Spec details</span><h2>Every rule, pinned for the build</h2></div>
     <p>The exact ruleset a developer implements. Anything marked <b>internal</b> is deliberately never shown to users.</p>
 
     <h3 class="sub3">Season</h3>
     <ul class="bul">
       <li><b>Length 10 days.</b> Season 01 runs Jul 25 to Aug 4 (UTC). Season 02 starts the instant Season 01 closes, back to back with no gap.</li>
-      <li><b>Auto-settlement.</b> At the exact 10-day mark the season closes and every user's points are finalized. Before close, points shown are a live projection.</li>
+      <li><b>Auto-settlement.</b> At the exact 10-day mark the season closes: the 1,000,000 pool is split by each user's final pool share, and their points lock into the lifetime total.</li>
     </ul>
 
     <h3 class="sub3">Pool &amp; points</h3>
     <ul class="bul cyan">
-      <li><b>Fixed pool, split by share.</b> 1,000,000 points per season, divided by weight so it always sums to exactly the pool, referral bonus included. Never minted per dollar, so it cannot inflate.</li>
-      <li><b>Weight, then share.</b> <span class="mono">your points = ( your weight &divide; &Sigma; all weight ) &times; 1,000,000</span>, where <span class="mono">weight = social points + volume + 10% &times; (direct referrals' social + volume)</span>.</li>
-      <li><b>Social &amp; tasks are absolute</b> in the weight: each task adds the fixed points from the table. Volume adds your traded amount. No hidden multipliers, no "$X = 1 point" rate.</li>
-      <li><b>Points shown never fall.</b> A user's point total only rises as they earn; the live <b>pool share %</b> is the moving number as others earn. Points finalize at season close (a live projection before then).</li>
-      <li><b>Lifetime total.</b> Each season's finalized points add to a permanent lifetime total (Season 01 + 02 + …), which carries toward the token. Per-season points reset for each new pool; the lifetime total never resets.</li>
+      <li><b>Fixed pool, split by share.</b> A 1,000,000 pool per season, handed out by each user's share of the total points earned, referral bonus included. Never minted per dollar, so it cannot inflate.</li>
+      <li><b>Points, then share.</b> Points are built from <b>trading volume</b>, <b>social &amp; task points</b>, and <b>10% of each direct referral's</b> trading and tasks. Then <span class="mono">pool share = your points &divide; &Sigma; all points</span> and <span class="mono">season reward = pool share &times; 1,000,000</span>.</li>
+      <li><b>The volume curve.</b> Notional enters as a concave power curve, <span class="mono">volume points = 7.85 &times; (season volume)^0.6</span>, applied to <b>cumulative</b> season volume, not per trade, so splitting one big trade into many earns nothing extra.</li>
+      <li><b>Coefficients (config-tunable).</b> Curvature <span class="mono">&alpha; = 0.6</span>, balance <span class="mono">C = 7.85</span>, set so <b>$5,000 of volume ties a full task season</b> (about 1,300 points). A whale does not dwarf the board and a task-only user still holds a real slice.</li>
+    </ul>
+    <div class="tbl"><table>
+      <thead><tr><th>Season volume</th><th>Volume points</th><th>vs a task-only user (~1,300)</th></tr></thead>
+      <tbody>
+        <tr><td>$1,000</td><td>~500</td><td>below a grinder</td></tr>
+        <tr><td>$5,000</td><td>~1,300</td><td>ties a grinder</td></tr>
+        <tr><td>$10,000</td><td>~1,970</td><td>1.5&times;</td></tr>
+        <tr><td>$100,000</td><td>~7,850</td><td>6&times;</td></tr>
+        <tr><td>$1,000,000</td><td>~31,250</td><td>24&times; (200&times; the volume, 24&times; the points)</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="bul cyan">
+      <li><b>Anti-farm.</b> Cumulative volume (splitting is useless) and a <b>quality-adjusted input</b> (wash-like patterns dampened before the curve). And even with the formula public, a user's <b>reward</b> needs everyone's live total, which is not published, so it is not a plug-in farming calculator.</li>
+      <li><b>Tunable at launch.</b> &alpha; and C are config values. Before Season 01, run a sensitivity pass over the expected volume distribution (what the top 1% takes, what a task-only user holds) and adjust, no redeploy.</li>
+      <li><b>Points only rise.</b> A user's point total only ever goes up as they earn; the live <b>pool share %</b> is the number that moves as others earn. What each share is worth settles at season close; the point total itself never falls.</li>
+      <li><b>Lifetime total.</b> Each season's finalized points add to a permanent lifetime total (Season 01 + 02 + …). Per-season points reset for each new pool; the lifetime total never resets.</li>
     </ul>
 
     <h3 class="sub3">Fees &amp; rebate</h3>
@@ -434,27 +504,36 @@
 
     <h3 class="sub3">The 10% point override</h3>
     <ul class="bul">
-      <li>A referrer's weight includes <b>10% of each direct referral's social + volume</b>, <b>not</b> the referral's own override, so it never compounds down a chain.</li>
-      <li>This 10% sits <b>inside the 1,000,000</b> as part of your weight, never on top. It shows as a separate line from your own social + volume, and counts toward the leaderboard and lifetime total.</li>
+      <li>A referrer's points include <b>10% of each direct referral's social + volume</b>, <b>not</b> the referral's own override, so it never compounds down a chain.</li>
+      <li>This 10% is part of <b>your own points</b>, so it lifts your share from inside and never mints pool beyond the 1,000,000. It shows as a separate line from your own social + volume, and counts toward the leaderboard and lifetime total.</li>
     </ul>
 
-    <h3 class="sub3">Referral rate ladder, re-checked each season</h3>
-    <p>The rate is not permanent. <b>Every condition is re-evaluated at each season close</b> (every 10 days), so a user holds a tier only while they still meet it that season. A referral is <b>active</b> when they have traded <b>$50 or more in the 10-day season</b>; the referral tiers below count active referrals, not raw signups.</p>
+    <h3 class="sub3">Referral rate ladder, re-checked every 30 days</h3>
+    <p><b>Dual clock:</b> the points pool runs on 10-day seasons, but the referral rate runs on a slower <b>30-day cycle</b> so ambassadors are not forced to re-grind every 10 days. The rate is still not permanent: <b>every condition is re-evaluated every 30 days</b> against a rolling 30-day window. A referral is <b>active</b> when they have traded <b>$50 or more in the last 30 days</b>; the tiers below count active referrals, not raw signups.</p>
     <div class="tbl"><table>
-      <thead><tr><th>Tier</th><th>Rate</th><th>Condition, per 10-day season</th><th>Adds</th></tr></thead>
+      <thead><tr><th>Tier</th><th>Rate</th><th>Condition, rolling 30 days</th><th>Adds</th></tr></thead>
       <tbody>
         <tr><td><span class="tier">Affiliate</span></td><td><span class="rate">15%</span></td><td>Default, everyone starts here.</td><td class="add">base</td></tr>
         <tr><td><span class="tier">Ambassador</span></td><td><span class="rate">20%</span></td><td>Connect X and keep @SmartXTerminal in your bio.</td><td class="add">+5%</td></tr>
-        <tr><td><span class="tier">Advocate</span></td><td><span class="rate">25%</span></td><td>2+ quote-retweets in the 10-day season and link posted in the Telegram group.</td><td class="add">+5%</td></tr>
-        <tr><td><span class="tier">Contributor</span></td><td><span class="rate">30%</span></td><td>5 referrals who each traded $50+ in the 10-day season.</td><td class="add">+5%</td></tr>
-        <tr><td><span class="tier">Captain</span></td><td><span class="rate">40%</span></td><td>20 referrals who each traded $50+ in the 10-day season.</td><td class="add">+10%</td></tr>
-        <tr><td><span class="tier">Partner</span></td><td><span class="rate">50%</span></td><td>50 referrals who each traded $50+ in the 10-day season.</td><td class="add">+10%</td></tr>
+        <tr><td><span class="tier">Advocate</span></td><td><span class="rate">25%</span></td><td>2+ quote-retweets in the last 30 days and link posted in the Telegram group.</td><td class="add">+5%</td></tr>
+        <tr><td><span class="tier">Contributor</span></td><td><span class="rate">30%</span></td><td>5 referrals who each traded $50+ in the last 30 days.</td><td class="add">+5%</td></tr>
+        <tr><td><span class="tier">Captain</span></td><td><span class="rate">40%</span></td><td>20 referrals who each traded $50+ in the last 30 days.</td><td class="add">+10%</td></tr>
+        <tr><td><span class="tier">Partner</span></td><td><span class="rate">50%</span></td><td>50 referrals who each traded $50+ in the last 30 days.</td><td class="add">+10%</td></tr>
       </tbody>
     </table></div>
     <ul class="bul">
       <li><b>Additive, order-independent.</b> Rate = 15% plus every condition currently met, capped at 50%.</li>
       <li><b>KOL fast-track.</b> BD can set a user to Partner manually, overriding the ladder.</li>
-      <li><b>Attribution is permanent</b> even though the rate is dynamic: a referral is yours for life, but only counts toward a tier in the seasons they stay active ($50+ in the season).</li>
+      <li><b>Attribution is permanent</b> even though the rate is dynamic: a referral is yours for life, but only counts toward a tier while they stay active ($50+ in the last 30 days).</li>
+    </ul>
+
+    <h3 class="sub3">VIP payback (trader track)</h3>
+    <ul class="bul">
+      <li><b>Tier by trailing 30-day volume, re-checked daily.</b> $200k+ Circle 20%, $50k+ VIP 10%, $20k+ Trader 5%, under $20k 0%. Same notional volume the leaderboard uses.</li>
+      <li><b>Forward-only, no clawback.</b> Each trade earns payback at the tier held <b>at that trade</b>, credited in pUSD to the trading balance. Crossing a threshold does not re-price past fees; dropping below never reverses payback already paid.</li>
+      <li><b>Total payback cap, 35%.</b> When a KOL discount and a VIP payback land on the same trade, the invitee's total is capped at 35% of the fee: <span class="mono">VIP payback = min( tier %, 35% &minus; discount % )</span>. With current tiers (15% max discount + 20% max VIP = 35%) the ceiling is never binding, so a Circle VIP keeps the full payback even through a discount link. The platform floor still holds.</li>
+      <li><b>Never touches the pool.</b> Payback is a pUSD fee rebate; it does not add to points or pool share, so it cannot double-dip the 1,000,000.</li>
+      <li><b>Payout cadence.</b> Default: accrues per trade at the tier held, credited daily in pUSD, the same rail as the referral rebate. <span class="tc">team to confirm</span></li>
     </ul>
 
     <h3 class="sub3">Tasks, canonical point values</h3>
@@ -484,66 +563,16 @@
 
     <h3 class="sub3">Verification &amp; abuse</h3>
     <ul class="bul">
-      <li><b>Automatic:</b> trades, volume, referral links, and referred volume on-chain; the X connection, bio, and quote-retweets via the connected X account, re-checked each season.</li>
-      <li><b>Wash trades count.</b> Any executed trade pays the 0.5% fee and earns, so there is no wash filter to build.</li>
-      <li><b>The $50-per-season bar</b> is the anti-farm floor for referrals, so empty sign-ups never count.</li>
+      <li><b>On-chain, automatic:</b> trades, volume, referral links, and referred volume.</li>
+      <li><b>X checks run through Twikit</b>, not the paid X API. Bio and quote-retweets are read from the connected handle via Twikit, re-checked on the 30-day cycle. This avoids X API cost, quota, and policy risk. <b>Fail-safe:</b> if a check cannot run (X down or rate-limited), the user <b>keeps their current tier</b> rather than being downgraded, so an outage never wrongly demotes an ambassador.</li>
+      <li><b>Quality-weighted, internal.</b> Points favor genuine activity; wash-like or self-directed patterns are dampened by the internal volume curve and quality signals (win rate, holding time, maker orders are candidate inputs). <b>None of this is spelled out publicly</b>, so it cannot be reduced to a formula and farmed. We do not advertise that any trade counts.</li>
+      <li><b>The $50-in-30-days bar</b> is the anti-farm floor for referrals, so empty sign-ups never count.</li>
     </ul>
 
     <h3 class="sub3">Token</h3>
     <ul class="bul cash-bul">
       <li>Lifetime points convert to the future SmartX token. <b>No date, value, or ratio is defined or shown</b>, by design.</li>
     </ul>
-  </section>
-
-  <!-- 09 FAQ / edge cases -->
-  <section id="faq">
-    <div class="sh cyan"><span class="n">09 · Edge cases</span><h2>What the build does in each case</h2></div>
-    <p>The situations a developer hits while wiring this up, and the exact behavior for each. Anything tagged <span class="tc">team to confirm</span> is an open call for the SmartX team.</p>
-
-    <h3 class="sub3">Seasons</h3>
-    <div class="faqgrp"><div class="faq">
-      <div class="qa"><div class="qq">A trade lands right on the 10-day boundary. Which season does it count in?</div><div class="aa">By <b>settlement time in UTC</b>: it counts in the season it settles in. Season 02 starts the instant Season 01 closes, back to back with no gap.</div></div>
-      <div class="qa"><div class="qq">A user joins halfway through a season. Are they behind?</div><div class="aa">They earn from that moment. Their share is their weight against the season's running total; nothing is back-dated, and the next fresh pool is 10 days away.</div></div>
-      <div class="qa"><div class="qq">Do daily and weekly tasks reset when the season does?</div><div class="aa">No. Daily tasks reset every 24h and weekly tasks every 7 days on their own clock. The <b>season is a separate 10-day cycle</b> for the pool and the referral rate.</div></div>
-      <div class="qa"><div class="qq">What happens to a user's points at season close?</div><div class="aa">They finalize and lock, add to the permanent lifetime total, and the per-season pool resets to a fresh 1,000,000. The lifetime total never resets.</div></div>
-    </div></div>
-
-    <h3 class="sub3">Points &amp; the pool</h3>
-    <div class="faqgrp"><div class="faq">
-      <div class="qa"><div class="qq">Can a user's point number drop when other people earn?</div><div class="aa">No. The <b>point total only rises</b>. The pool share % is the number that moves as others earn. Points shown before close are a live projection.</div></div>
-      <div class="qa"><div class="qq">Does the 10% referral bonus mint points beyond 1,000,000?</div><div class="aa">No. It is part of a user's weight, so it sits <b>inside</b> the fixed 1,000,000, never on top. Social, volume, and every 10% bonus always sum to exactly 1,000,000.</div></div>
-      <div class="qa"><div class="qq">Are one-time milestone tasks earnable again next season?</div><div class="aa">No. One-time tasks pay <b>once ever</b>; they count toward the pool in the season they are completed.</div></div>
-      <div class="qa"><div class="qq">How is "trading volume" measured?</div><div class="aa">Notional volume traded (the size of positions), read on-chain. <span class="tc">team to confirm</span> how each side of a trade counts toward volume.</div></div>
-    </div></div>
-
-    <h3 class="sub3">Referrals</h3>
-    <div class="faqgrp"><div class="faq">
-      <div class="qa"><div class="qq">When does a referral attach to a user?</div><div class="aa">On the referred user's <b>first deposit</b>, and it stays with the referrer for life. Self-referrals and circular referrals (A refers B, B refers A) do not count.</div></div>
-      <div class="qa"><div class="qq">What exactly makes a referral "active"?</div><div class="aa"><b>$50 or more in trading volume within the 10-day season.</b> Wash or self-directed volume counts; the bar only exists to filter empty sign-ups.</div></div>
-      <div class="qa"><div class="qq">A referral was active last season but not this one.</div><div class="aa">They stop counting toward the tier this season (re-checked each season), but stay attributed to the referrer for life and count again in any season they cross $50.</div></div>
-      <div class="qa"><div class="qq">A user's rate drops at season close. Are past rebates clawed back?</div><div class="aa">No. The rate applied is the rate <b>at the time of each referral's trade</b>. Rebate already earned is never reversed.</div></div>
-      <div class="qa"><div class="qq">How are the bio and quote-retweets verified without a form?</div><div class="aa">Through the <b>connected X account</b> (X API), re-checked each season. Quote-retweets that count are quote-posts of a SmartX post made that season by the connected handle.</div></div>
-    </div></div>
-
-    <h3 class="sub3">Rebate &amp; claim</h3>
-    <div class="faqgrp"><div class="faq">
-      <div class="qa"><div class="qq">When can a user claim, and what does each state mean?</div><div class="aa">Any time. Rebate <b>accrues daily into Available</b>; Claim moves it to the SmartX balance; Paid is the running total already claimed; Total earned is Available + Paid.</div></div>
-      <div class="qa"><div class="qq">What currency is the rebate paid in? Is there a minimum?</div><div class="aa">The user's SmartX balance asset (USDC / pUSD). <span class="tc">team to confirm</span> the exact token and whether a small minimum applies to cover the transfer.</div></div>
-    </div></div>
-
-    <h3 class="sub3">Leaderboard</h3>
-    <div class="faqgrp"><div class="faq">
-      <div class="qa"><div class="qq">Why does a lower-volume trader show more points than a higher-volume one?</div><div class="aa">Points include tasks and referral bonuses, not just volume, and the default board ranks by <b>this season's volume</b>, so the two need not line up. A footnote on the board says so.</div></div>
-      <div class="qa"><div class="qq">How is the profile avatar generated?</div><div class="aa">Deterministically from the wallet address, so the same wallet always renders the same pixel avatar. No upload, no storage.</div></div>
-    </div></div>
-
-    <h3 class="sub3">Wallet &amp; empty states</h3>
-    <div class="faqgrp"><div class="faq">
-      <div class="qa"><div class="qq">A brand-new user with no trades or referrals.</div><div class="aa">Affiliate at 15%, 0 points, no pool share yet, and every task open to start. The ladder shows exactly what unlocks each step.</div></div>
-      <div class="qa"><div class="qq">Wallet not connected.</div><div class="aa">The page shows a preview with a connect / deposit prompt; live figures appear once the wallet is connected.</div></div>
-      <div class="qa"><div class="qq">Nothing available to claim.</div><div class="aa">The Claim button is disabled until Available is above zero.</div></div>
-      <div class="qa"><div class="qq">The season has ended but the next has not opened yet.</div><div class="aa">The pool card shows the finalized standings until Season 02 begins, then flips to the fresh pool.</div></div>
-    </div></div>
   </section>
 
   <footer>

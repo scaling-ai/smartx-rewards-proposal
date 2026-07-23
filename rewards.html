@@ -207,6 +207,25 @@
   .kol .d { color: var(--ink2); font-size: 13px; line-height: 1.5; max-width: 66ch; }
   .kol .cta { font-family: var(--mono); font-weight: 700; font-size: 13px; color: #04241f; background: var(--mint); padding: 12px 20px; border-radius: 8px; white-space: nowrap; }
   .kol .cta:hover { background: var(--mint2); }
+  /* KOL discount-link generator */
+  .dlinks { margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 18px; }
+  .dlinks-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .dlinks-top .h { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .dlinks-elig { font-family: var(--mono); font-weight: 700; font-size: 10px; letter-spacing: .05em; color: var(--mint); background: var(--mint-dim); border: 1px solid var(--mint-line); border-radius: 6px; padding: 3px 9px; }
+  .dlinks-sub { color: var(--ink2); font-size: 12.5px; line-height: 1.55; margin: 11px 0 2px; max-width: 72ch; }
+  .dlink { display: flex; align-items: center; gap: 12px; margin-top: 11px; border: 1px solid var(--line2); border-radius: 11px; padding: 10px 10px 10px 13px; background: #000; }
+  .dlink .chip { font-family: var(--mono); font-weight: 700; font-size: 11px; letter-spacing: .03em; padding: 5px 10px; border-radius: 6px; white-space: nowrap; min-width: 76px; text-align: center; }
+  .dlink.std .chip { color: var(--muted); background: rgba(255,255,255,.05); border: 1px solid var(--line2); }
+  .dlink.d10 .chip { color: var(--mint); background: var(--mint-dim); border: 1px solid var(--mint-line); }
+  .dlink.d15 .chip { color: var(--cash); background: var(--cash-dim); border: 1px solid var(--cash-line); }
+  .dlink .split { font-family: var(--mono); font-size: 10.5px; color: var(--muted); white-space: nowrap; min-width: 128px; }
+  .dlink .split b { color: var(--ink2); font-weight: 700; }
+  .dlink .u { flex: 1; font-family: var(--mono); font-size: 12.5px; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 120px; }
+  .dlink .cpy { font-family: var(--mono); font-weight: 700; font-size: 11.5px; color: var(--ink); background: var(--panel2); border: 1px solid var(--line2); border-radius: 7px; padding: 8px 14px; cursor: pointer; white-space: nowrap; }
+  .dlink .cpy:hover { border-color: var(--mint-line); color: var(--mint); }
+  .dlinks-note { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 13px; line-height: 1.55; letter-spacing: .01em; }
+  .dlinks-note b { color: var(--cash); font-weight: 700; }
+  @media (max-width: 640px){ .dlink { flex-wrap: wrap; gap: 9px; } .dlink .u { order: 5; min-width: 100%; } .dlink .split { min-width: 0; } }
 
   /* leaderboard */
   .lbf-head { display: flex; align-items: center; gap: 13px; flex-wrap: wrap; margin-bottom: 13px; }
@@ -516,7 +535,7 @@
     <div class="pxf" style="color:#04222b;opacity:.09"></div>
     <div class="binner">
       <div class="bnumrow"><div class="bnum">1,000,000</div><div class="blabel">Point pool</div></div>
-      <div class="bdesc">Split by points earned: your own, plus <b>10% of every referral's trading and task points</b>. Your slice is live now and locks at season close.</div>
+      <div class="bdesc">Split by points earned: your own, plus <b>10% of every referral's trading and task points</b>. Your points earn in live; the pool is split by your pool share at close.</div>
       <div class="bbar"><i></i></div>
       <div class="bstats">
         <div class="bstat"><div class="v">6d 14h</div><div class="l">left in season</div></div>
@@ -534,7 +553,7 @@
   <!-- points header -->
   <div class="phead">
     <h1>SmartX Points <span class="c tnum">3,240</span></h1>
-    <div class="meta">Season 01 · <b>2,900 from trading &amp; tasks + 340 from referrals</b></div>
+    <div class="meta">Season 01</div>
   </div>
 
   <div class="cols">
@@ -618,15 +637,15 @@
         <div style="padding:0 16px"><div class="bt">Your season</div><div class="bs">How your points stack up</div></div>
         <div class="body">
           <div class="boost-mult">3,240<small>YOUR POINTS</small></div>
-          <div class="boost-sub">Your live slice of the 1,000,000 pool. Locks at season close.</div>
+          <div class="boost-sub">Your points only rise. At season close, the 1,000,000 pool is split by your pool share.</div>
           <div class="ends"><span>Lifetime points</span><b>3,240</b></div>
 
-          <div class="prog-h"><span>Where they come from</span></div>
-          <div class="prow"><span class="radio done"></span><span class="rn">Trading &amp; tasks</span><span class="rv mintc">2,900</span></div>
-          <div class="prow"><span class="radio done"></span><span class="rn">From referrals (10% of trading + tasks)</span><span class="rv mintc">+340</span></div>
+          <div class="prog-h"><span>This season · where they come from</span></div>
+          <div class="prow"><span class="radio done"></span><span class="rn">Trading &amp; tasks</span><span class="rv mintc">1,300</span></div>
+          <div class="prow"><span class="radio done"></span><span class="rn">From referrals (10% of trading + tasks)</span><span class="rv mintc">+1,940</span></div>
           <div class="prow"><span class="radio"></span><span class="rn">Pool share</span><span class="rv">0.32%</span></div>
           <div class="prow"><span class="radio"></span><span class="rn">Volume rank</span><span class="rv">#218 / 4,912</span></div>
-          <a class="rules" href="#"><span>Points carry toward the token</span><span>↗</span></a>
+          <a class="rules" href="#"><span>Points build toward future rewards</span><span>↗</span></a>
         </div>
       </div>
 
@@ -678,22 +697,22 @@
       <div class="conds-h">How to raise your rate<span>Each one adds to your rate · do them in any order</span></div>
       <div class="cnd done">
         <span class="ci">✓</span>
-        <div class="ct"><div class="cl">Connect <svg class="xico" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> and add &ldquo;@SmartXTerminal&rdquo; to your bio</div><div class="m">Keep it in your bio · re-checked each season · no form</div></div>
+        <div class="ct"><div class="cl">Connect <svg class="xico" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> and add &ldquo;@SmartXTerminal&rdquo; to your bio</div><div class="m">Keep it in your bio · re-checked every 30 days · no form</div></div>
         <span class="cp">+5%</span>
       </div>
       <div class="cnd done">
         <span class="ci">✓</span>
-        <div class="ct"><div class="cl">Post 2+ quote-retweets in the 10-day season and share your link in the Telegram group</div><div class="m">This season: 2 of 2 quote-RTs · link posted</div></div>
+        <div class="ct"><div class="cl">Post 2+ quote-retweets in the last 30 days and share your link in the Telegram group</div><div class="m">Last 30 days: 2 of 2 quote-RTs · link posted</div></div>
         <span class="cp">+5%</span>
       </div>
       <div class="cnd">
         <span class="ci"></span>
-        <div class="ct"><div class="cl">Bring in 5 active referrals</div><div class="cbar"><i style="width:60%"></i></div><div class="m">Active referral = someone you referred who traded $50+ in the 10-day season · 3 of 5 active referrals · counted on-chain</div></div>
+        <div class="ct"><div class="cl">Bring in 5 active referrals</div><div class="cbar"><i style="width:60%"></i></div><div class="m">Active referral = someone you referred who traded $50+ in the last 30 days · 3 of 5 active referrals · counted on-chain</div></div>
         <span class="cp">+5%</span>
       </div>
       <div class="cnd">
         <span class="ci"></span>
-        <div class="ct"><div class="cl">Grow to 20 active referrals</div><div class="cbar"><i style="width:15%"></i></div><div class="m">3 of 20 active referrals · re-checked each season</div></div>
+        <div class="ct"><div class="cl">Grow to 20 active referrals</div><div class="cbar"><i style="width:15%"></i></div><div class="m">3 of 20 active referrals · re-checked every 30 days</div></div>
         <span class="cp">+10%</span>
       </div>
       <div class="cnd">
@@ -707,6 +726,19 @@
       <div class="h">Your referral link</div>
       <div class="linkbox"><span class="u">app.smartx.io/?ref=9KVzYsz1</span><button class="lb-share">Share link</button><button class="btn-mint">Copy</button></div>
     </div>
+
+    <div class="dlinks">
+      <div class="dlinks-top">
+        <div class="h">Discount links</div>
+        <span class="dlinks-elig">Advocate 25%+ · unlocked</span>
+      </div>
+      <div class="dlinks-sub">Hand your followers part of your rebate. The standard link keeps all 25% for you; a discount link gives some to them, paid in pUSD. Your share plus theirs never passes 25%, so the trading fee stays exactly the same.</div>
+      <div class="dlink std"><span class="chip">Standard</span><span class="split">You keep <b>25%</b></span><span class="u">app.smartx.io/?ref=9KVzYsz1</span><button class="cpy">Copy</button></div>
+      <div class="dlink d10"><span class="chip">10% off</span><span class="split">You <b>15%</b> · them <b>10%</b></span><span class="u">app.smartx.io/?ref=9KVzYsz1-D10</span><button class="cpy">Copy</button></div>
+      <div class="dlink d15"><span class="chip">15% off</span><span class="split">You <b>10%</b> · them <b>15%</b></span><span class="u">app.smartx.io/?ref=9KVzYsz1-D15</span><button class="cpy">Copy</button></div>
+      <div class="dlinks-note">Discounts come out of <b>your own rebate</b>, never the platform, so the fee your follower pays does not change. Only referrers at Advocate (25%) or higher can issue links.</div>
+    </div>
+
     <div class="kol">
       <div class="l">
         <span class="plabel" style="color:var(--mint)">Fast track · big audiences</span>
@@ -778,6 +810,18 @@
         var open = tbl.classList.toggle('expanded');
         lbMore.textContent = open ? 'Show fewer ↑' : 'Show more traders ↓';
       });
+
+      // copy buttons (discount links + main referral link)
+      function flash(btn){ var o = btn.textContent; btn.textContent = 'Copied'; setTimeout(function(){ btn.textContent = o; }, 1200); }
+      function copyText(t, btn){
+        if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(function(){ flash(btn); }, function(){ flash(btn); }); }
+        else { flash(btn); }
+      }
+      document.querySelectorAll('.dlink .cpy').forEach(function(b){
+        b.addEventListener('click', function(){ var u = b.parentNode.querySelector('.u'); copyText(u ? u.textContent.trim() : '', b); });
+      });
+      var mainCopy = document.querySelector('.linkbox .btn-mint');
+      if (mainCopy) mainCopy.addEventListener('click', function(){ var u = mainCopy.parentNode.querySelector('.u'); copyText(u ? u.textContent.trim() : '', mainCopy); });
     })();
   </script>
 </div>
