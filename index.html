@@ -390,7 +390,7 @@
     </ul>
 
     <h3 class="sub3">One fee, sliced to fit</h3>
-    <p>Referral rebate, KOL links, and VIP payback all draw from the same trading fee. Rather than let each rule take its own cut and clamp the overflow, the slices are <b>sized so they always fit</b>. Overpayment is impossible by construction, not patched over by a cap.</p>
+    <p>Only two things draw from the trading fee: the referral rebate (a shared KOL discount comes out of it, never on top) and the VIP payback. Rather than let each rule take its own cut and clamp the overflow, the two slices are <b>sized so they always fit</b>. Overpayment is impossible by construction, not patched over by a cap.</p>
     <div class="call cyan">
       <div class="q">referral ( &le; 50% ) + VIP ( &le; 30% ) = &le; 80% &nbsp;&rarr;&nbsp; platform keeps &ge; 20%, always</div>
       <p>The full 0.5% fee is collected first. <b>Referral is one rate, 50% at most</b>, single level like GMX, Hyperliquid, and Binance. The referrer keeps part and can <b>share the rest with their referee as a discount</b> (for example keep 35%, give 15%), so referral never exceeds 50%. The <b>trader</b> gets their VIP payback (0 to 30%) on their own volume. Since 50% + 30% = 80%, the platform always keeps at least 20%, and no payout is ever trimmed.</p>
@@ -426,7 +426,7 @@
     </table></div>
     <ul class="bul">
       <li><b>One entry point.</b> A single high-rebate application routes any user or channel that outgrows the self-serve ladder to BD for custom terms, instead of scattered side deals.</li>
-      <li><b>Same cap, always.</b> Whatever BD negotiates, the 80% total-payout cap still holds, so no deal can put the platform underwater on a trade.</li>
+      <li><b>Same ceiling, always.</b> BD can set a rate, but it never exceeds the 50% referral maximum, so referral plus VIP still totals at most 80% and the platform keeps its 20% floor. No deal can put the platform underwater on a trade.</li>
       <li><b>Graduation path.</b> A self-serve Partner who keeps growing, or a KOL who applies, moves into this program. Self-serve is the on-ramp; the program is the negotiated top.</li>
     </ul>
 
