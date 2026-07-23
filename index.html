@@ -193,7 +193,7 @@
       <div class="h">TL;DR</div>
       <ul>
         <li><b>One season pool.</b> Every trade, referral and task feeds it, split pro-rata every 10 days, then it resets so newcomers always have a fair shot.</li>
-        <li><b>Referral climbs 15% to 50%</b> on your direct referrals (with a second layer and negotiated partner tiers on top), and you also collect 10% of every point they earn from trading and tasks.</li>
+        <li><b>Referral climbs 15% to 50%</b> of your direct referrals' fees, yours to keep or share with them as a discount, and you also collect 10% of every point they earn from trading and tasks.</li>
         <li><b>A track for traders, not just recruiters.</b> Heavy traders earn a pUSD fee payback, 5 to 30% by 30-day volume, so volume is rewarded even with no referrals.</li>
         <li><b>Ambassadors join from their X bio.</b> No Google Form, no spreadsheet, no review queue. Big KOLs skip the ladder and deal with BD directly.</li>
         <li><b>Points accrue toward the future SmartX token</b> (this only seeds the expectation that points may convert; no TGE plan, date, or value is stated), with a live leaderboard showing exactly where each trader stands.</li>
@@ -324,8 +324,8 @@
     <div class="sh mint"><span class="n">04 · Referral &amp; Ambassador</span><h2>A rate that climbs with your network</h2></div>
     <p>The Ambassador Program stops being a separate silo and becomes the referral rate ladder, the <b style="color:var(--mint)">mint</b> world: trading and referral. The rate is a share of the <b>trading fees (a flat 0.5%) a user's referrals generate</b>, and it is not flat: it climbs from 15% to 50% as the user contributes more.</p>
     <div class="call">
-      <div class="q">Referrals pay you on two layers, plus points</div>
-      <p>The ladder rate above is <b>tier-1</b>, your cut of your <b>direct</b> referrals' fees. Serious referrers and partners also earn <b>tier-2</b>, a smaller cut of their referrals' referrals (the full two-layer rules and the 80% cap are in section 05). On the points side you also collect <b>10% of every point your direct referrals earn</b>. The fee layers reward the money referred; the point override rewards their ongoing activity.</p>
+      <div class="q">Your rate is yours to split, plus points</div>
+      <p>Your ladder rate is your cut of your <b>direct</b> referrals' fees, a single level like GMX, Hyperliquid, and Binance. You can <b>share part of that rate with them as a discount</b> (for example keep 35%, give 15%), detailed in section 05. On the points side you also collect <b>10% of every point your direct referrals earn</b>. The rate rewards the money referred; the point override rewards their ongoing activity.</p>
     </div>
     <div class="viz">
       <div class="ladder">
@@ -389,15 +389,15 @@
       <li><b>Status only, never the pool.</b> VIP tier does not touch your points, so it cannot double-dip the 1,000,000.</li>
     </ul>
 
-    <h3 class="sub3">One fee, one cap</h3>
-    <p>Referral rebate (two layers), KOL links, and VIP payback all draw from the same trading fee. Because several rules can land on a single trade, they are governed by <b>one hard cap on total payout</b>, so the platform never pays out more than it collected.</p>
+    <h3 class="sub3">One fee, sliced to fit</h3>
+    <p>Referral rebate, KOL links, and VIP payback all draw from the same trading fee. Rather than let each rule take its own cut and clamp the overflow, the slices are <b>sized so they always fit</b>. Overpayment is impossible by construction, not patched over by a cap.</p>
     <div class="call cyan">
-      <div class="q">total payout ( tier-1 + tier-2 + VIP ) &le; 80% of the fee &nbsp;&rarr;&nbsp; platform keeps &ge; 20%</div>
-      <p>On any one trade the full 0.5% fee is collected first, then split: the <b>direct referrer</b> gets tier-1 (15 to 50%, up to 60% for negotiated partners), the <b>secondary referrer</b> gets tier-2 (up to 40% for partners), and the <b>trader</b> gets their VIP payback (0 to 30%). If the sum would pass 80%, it is trimmed in order <b>tier-1 &rarr; tier-2 &rarr; VIP</b>, so referral commitments are honored first and the trader's own bonus is trimmed last. Nothing nests or multiplies.</p>
+      <div class="q">referral ( &le; 50% ) + VIP ( &le; 30% ) = &le; 80% &nbsp;&rarr;&nbsp; platform keeps &ge; 20%, always</div>
+      <p>The full 0.5% fee is collected first. <b>Referral is one rate, 50% at most</b>, single level like GMX, Hyperliquid, and Binance. The referrer keeps part and can <b>share the rest with their referee as a discount</b> (for example keep 35%, give 15%), so referral never exceeds 50%. The <b>trader</b> gets their VIP payback (0 to 30%) on their own volume. Since 50% + 30% = 80%, the platform always keeps at least 20%, and no payout is ever trimmed.</p>
     </div>
     <div class="call cash">
-      <div class="q">Why a single cap, not three independent ones</div>
-      <p>If each rule caps on its own, the sum can pass 100%. Extreme case, all three maxed on one trade: 60% direct + 40% secondary + 30% VIP = <b>130%</b>, more than the fee itself. That is a mathematical certainty, not a rare accident, whenever the caps are independent. One 80% cap makes overpayment impossible by construction. On the normal self-serve path (one layer at 50% + VIP 30% = 80%) the cap sits right at the edge and only ever bites on deep two-layer or negotiated chains. Backend: <span class="mono">payout = min( tier1 + tier2 + vip, 0.80 &times; fee )</span>, distributed in that priority.</p>
+      <div class="q">Why single level, like the major venues</div>
+      <p>GMX, Hyperliquid, and Binance all pay referral on <b>one level only</b>, direct referrals. A second layer is what lets payouts sum past 100%, and it carries pyramid-scheme optics. One level keeps the math clean and the program defensible; the network is still rewarded, through the 10% point override on direct referrals.</p>
     </div>
 
     <h3 class="sub3">KOL discount links, a real selling point</h3>
@@ -409,19 +409,19 @@
     <ul class="bul">
       <li><b>Self-funding rule.</b> A link can only pay out of the rebate the referrer actually earns on that invitee, capped at their own rate. Self-referrals earn no rebate, so a self or sybil link pays <b>zero</b>, which kills the "discount yourself" exploit at the root.</li>
       <li><b>Fixed at signup.</b> Which rate an invitee gets (plain, 10%, or 15%) is set by the link they join through, stored on the referral, and applied to every trade they make.</li>
-      <li><b>The discount lives inside tier-1.</b> A discount link simply moves part of the referrer's own tier-1 rate to the invitee (paid in pUSD), so it adds no new cost. Together with the invitee's VIP payback it is still governed by the single <b>80% total cap</b> above, so no stacking can push the platform underwater.</li>
+      <li><b>The discount is part of your rate.</b> A discount link simply moves part of the referrer's own rate to the invitee (paid in pUSD), so it adds no new cost. Referral plus the trader's VIP still tops out at 80%, so no stacking can push the platform underwater.</li>
       <li><b>Advocate tier and up (25%+).</b> Discount links unlock only for referrers at 25% or higher, so only people with real rate to share can issue them, not every user. BD can also fast-track a KOL straight to Partner.</li>
     </ul>
 
     <h3 class="sub3">The Partner Program (negotiated channels)</h3>
-    <p>The self-serve ladder tops at Partner (50%). Above it sits a <b>BD-managed program</b> for channels that bring scale and cannot be handled self-serve. These are negotiated case by case and live under the same 80% total cap.</p>
+    <p>The self-serve ladder tops at Partner (50%), which is also the referral ceiling for everyone. A <b>BD-managed program</b> lets channels that bring scale reach that ceiling without grinding the ladder, and sets the fixed team and POC rates. Because no channel goes above 50%, the 20% platform floor holds on its own.</p>
     <div class="tbl"><table>
-      <thead><tr><th>Channel</th><th>Tier-1 (direct)</th><th>Tier-2 (indirect)</th><th>How to enter</th></tr></thead>
+      <thead><tr><th>Channel</th><th>Referral rate</th><th>How to enter</th></tr></thead>
       <tbody>
-        <tr><td><span class="tier">External growth</span> (large KOL, aggregator)</td><td><span class="rate">up to 60%</span></td><td><span class="rate">up to 40%</span></td><td>Application + BD terms</td></tr>
-        <tr><td><span class="tier">Team links</span></td><td><span class="rate">20%</span></td><td>&mdash;</td><td>Internal</td></tr>
-        <tr><td><span class="tier">POC / integration</span></td><td><span class="rate">4%</span></td><td>&mdash;</td><td>Partner deal</td></tr>
-        <tr><td><span class="tier">Custom high-rebate</span></td><td colspan="2">Negotiated</td><td>Application sheet</td></tr>
+        <tr><td><span class="tier">External growth</span> (large KOL, aggregator)</td><td><span class="rate">up to 50%</span></td><td>Application + BD terms</td></tr>
+        <tr><td><span class="tier">Team links</span></td><td><span class="rate">20%</span></td><td>Internal</td></tr>
+        <tr><td><span class="tier">POC / integration</span></td><td><span class="rate">4%</span></td><td>Partner deal</td></tr>
+        <tr><td><span class="tier">Custom high-rebate</span></td><td>Negotiated, cap 50%</td><td>Application sheet</td></tr>
       </tbody>
     </table></div>
     <ul class="bul">
@@ -431,7 +431,7 @@
     </ul>
 
     <p class="qnote"><b>Can a KOL link drain the platform, or discount yourself?</b> No to both. A link pays only out of the referrer's <b>own rebate</b> on that invitee, capped at their rate. Self and sybil referrals earn no rebate, so their link pays zero.</p>
-    <p class="qnote"><b>Walk me through the fee on one trade.</b> $10 fee, referred by a 25% Advocate, trader is Circle (30% VIP): referrer $2.50 (tier-1), trader $3.00 back in pUSD (VIP), platform $4.50. Total out is 55%, under the 80% cap, so nothing trims. Add a 15%-off link and the referrer's $2.50 just splits ($1.00 kept, $1.50 to the invitee), with no change to the platform. The cap only bites on deep chains: a 50% Partner + 40% tier-2 + 30% VIP would be 120%, trimmed to 80% in the order tier-1, tier-2, VIP.</p>
+    <p class="qnote"><b>Walk me through the fee on one trade.</b> $10 fee, referrer at 50%, trader is Circle (30% VIP): referrer $5.00, trader $3.00 back in pUSD, platform $2.00. That is 50% + 30% = 80%, and the platform still keeps $2.00. If the referrer shares a 15% discount, their $5.00 splits, $3.50 to them and $1.50 to the invitee, with no change to the platform. VIP is separate, on the trader's own volume. Referral + VIP never passes 80%.</p>
   </section>
 
   <!-- 06 leaderboard -->
@@ -480,15 +480,15 @@
       <li><b>Referral verification:</b> referral count and referred trading volume on-chain; the X connection, bio, and quote-retweets read through <b>Twikit</b> (not the paid X API) and re-checked every 30 days, keeping the current tier if a check cannot run.</li>
       <li><b>Rate engine:</b> compute a user's referral rate as 15% plus every completed, order-independent condition, applied to referred trading fees, and account rebate as earned / available / paid, accruing daily with a user claim to balance.</li>
       <li><b>Leaderboard aggregation</b> across three boards: this season's volume, last season's points, and all-time points, each with 7-day rank movement.</li>
-      <li><b>Commission engine:</b> two-layer rebate (tier-1 direct, tier-2 indirect), VIP payback by 30-day volume, KOL discount links, and the Partner Program, all clamped by the single 80% total-payout cap with the tier-1 &rarr; tier-2 &rarr; VIP trim order.</li>
+      <li><b>Commission engine:</b> a single-level referral rate (15 to 50%) the referrer can split with their referee as a discount, VIP payback by 30-day volume, and the Partner Program, sized so referral + VIP never passes 80% and the platform floor holds without trimming.</li>
     </ul>
     <h3 class="sub3">Rollout, in phases</h3>
     <div class="tbl"><table>
       <thead><tr><th>Phase</th><th>What ships</th></tr></thead>
       <tbody>
-        <tr><td><b>0 &middot; Lock</b></td><td>Sensitivity pass to set &alpha;, C, and the tier-2 rate; confirm the 80% cap and trim order. Carry the current fixed rates over as-is (team 20%, POC 4%).</td></tr>
-        <tr><td><b>1 &middot; Core engine</b></td><td>Season pool + self-serve tier-1 ladder (15 to 50%) + VIP payback + the 80% total cap. Daily accrual and claim, leaderboard. The mass-market launch.</td></tr>
-        <tr><td><b>2 &middot; Network + partners</b></td><td>Tier-2 secondary rebate, the Partner Program application flow, KOL discount links, Twikit verification at scale.</td></tr>
+        <tr><td><b>0 &middot; Lock</b></td><td>Sensitivity pass to set &alpha; and C; confirm referral 50% + VIP 30% keeps the 20% floor. Carry the current fixed rates over as-is (team 20%, POC 4%).</td></tr>
+        <tr><td><b>1 &middot; Core engine</b></td><td>Season pool + self-serve referral ladder (15 to 50%) + VIP payback. Daily accrual and claim, leaderboard. The mass-market launch.</td></tr>
+        <tr><td><b>2 &middot; Partners + sharing</b></td><td>The Partner Program application flow, referrer discount codes, Twikit verification at scale.</td></tr>
         <tr><td><b>3 &middot; Refine</b></td><td>Effective-volume quality-weighting (wash filters), boosted seasons (the pool lever), token-conversion prep.</td></tr>
       </tbody>
     </table></div>
@@ -536,9 +536,9 @@
     <h3 class="sub3">Fees &amp; rebate</h3>
     <ul class="bul">
       <li><b>Flat 0.5% fee</b>, maker and taker the same.</li>
-      <li><b>Rebate, two layers.</b> <b>Tier-1</b> = 15% to 50% (up to 60% for negotiated partners) of the 0.5% fee a user's <b>direct</b> referrals pay. <b>Tier-2</b> = up to 40% (negotiated partners) of the fees their referrals' referrals pay. Rebate <b>accrues daily into Available</b>; the user <b>claims</b> it to their SmartX balance. States: Total earned, Available (Claim), Paid, Referred volume.</li>
+      <li><b>One level, split with the referee.</b> The referral rate (ladder 15 to 50%, or a BD-set partner rate up to 50%) is on the 0.5% fee a user's <b>direct</b> referrals pay, single level. The referrer keeps part and can share the rest with the referee as a discount, so the total never exceeds their rate. <b>Accrues daily into Available</b>; the user <b>claims</b> it to their SmartX balance. States: Total earned, Available (Claim), Paid, Referred volume.</li>
       <li><b>How payouts settle.</b> Rebate is <b>claimed</b> by the user; VIP payback <b>auto-credits daily</b> (no claim). Both are internal pUSD balance credits, settled on withdrawal, not a per-payout on-chain transfer. <span class="tc">team to confirm</span></li>
-      <li><b>Override is one level.</b> The 10% <b>point</b> override applies to <b>direct referrals only</b>, no compounding down a chain. Only the fee rebate has a second layer.</li>
+      <li><b>Everything is one level.</b> Both the fee rebate and the 10% <b>point</b> override apply to <b>direct referrals only</b>, no second level, matching how GMX, Hyperliquid, and Binance run it.</li>
     </ul>
 
     <h3 class="sub3">The 10% point override</h3>
@@ -571,7 +571,7 @@
     <ul class="bul">
       <li><b>Tier by trailing 30-day volume, re-checked daily.</b> $500k+ Circle 30%, $200k+ Platinum 20%, $100k+ Gold 15%, $50k+ Silver 10%, $20k+ Bronze 5%, under $20k 0%. Same notional volume the leaderboard uses.</li>
       <li><b>Forward-only, no clawback.</b> Each trade earns payback at the tier held <b>at that trade</b>, credited in pUSD to the trading balance. Crossing a threshold does not re-price past fees; dropping below never reverses payback already paid.</li>
-      <li><b>Total payout cap, 80%.</b> On one trade, tier-1 + tier-2 + VIP payback (a KOL discount lives inside tier-1) is capped at <b>80% of the fee</b>, so the platform keeps at least 20%. If the sum would exceed it, trim in order <span class="mono">tier-1 &rarr; tier-2 &rarr; VIP</span>, so referral commitments hold and the trader's own bonus is trimmed last. Backend: <span class="mono">payout = min( tier1 + tier2 + vip, 0.80 &times; fee )</span>. Self-serve (50% + 30% = 80%) sits at the cap; it only bites on deep two-layer or negotiated chains.</li>
+      <li><b>Platform floor, 20%, by construction.</b> Referral (&le; 50%) + VIP payback (&le; 30%) totals at most 80% of the fee, so the platform always keeps at least 20%. The slices are sized to fit, so no payout is ever trimmed and every party gets exactly their stated rate. A shared discount is part of the referral rate, not on top of it.</li>
       <li><b>Never touches the pool.</b> Payback is a pUSD fee rebate; it does not add to points or pool share, so it cannot double-dip the 1,000,000.</li>
       <li><b>Payout cadence.</b> Default: accrues per trade at the tier held, credited daily in pUSD, the same rail as the referral rebate. <span class="tc">team to confirm</span></li>
     </ul>
