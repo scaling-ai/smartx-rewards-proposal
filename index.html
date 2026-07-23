@@ -404,6 +404,7 @@
     </div>
     <ul class="bul">
       <li><b>Self-funding rule.</b> A link can only pay out of the rebate the referrer actually earns on that invitee, capped at their own rate. Self-referrals earn no rebate, so a self or sybil link pays <b>zero</b>, which kills the "discount yourself" exploit at the root.</li>
+      <li><b>Fixed at signup.</b> Which rate an invitee gets (plain, 10%, or 15%) is set by the link they join through, stored on the referral, and applied to every trade they make.</li>
       <li><b>Total payback cap, 35%.</b> A KOL discount (up to 15%) and a VIP payback (up to 30%) can both land on one trader, so their total is capped at 35% of the fee: the discount (referrer-funded) pays in full, then the VIP (platform-funded) fills the rest. The platform floor still holds.</li>
       <li><b>Advocate tier and up (25%+).</b> Discount links unlock only for referrers at 25% or higher, so only people with real rate to share can issue them, not every user. BD can also fast-track a KOL straight to Partner.</li>
     </ul>
@@ -494,7 +495,7 @@
       </tbody>
     </table></div>
     <ul class="bul cyan">
-      <li><b>Anti-farm, and what effective volume is.</b> <b>Launch (v1):</b> effective volume = raw notional minus obvious self-trades and A-to-B circular trades. Sophisticated quality-weighting (win rate, holding time, maker ratio) is <b>Phase 2</b>. The economics already make wash weak: it runs on <b>cumulative</b> volume (splitting is useless), washing $1,000,000 pays $5,000 in fees for a sublinear point gain, and the pool is fixed so a washer only dilutes their own share. And even public, the formula is not a plug-in calculator, since a reward needs everyone's live total.</li>
+      <li><b>Anti-farm, and what effective volume is.</b> <b>Launch (v1):</b> effective volume = raw notional minus obvious self-trades and A-to-B circular trades. Sophisticated quality-weighting (win rate, holding time, maker ratio) is <b>Phase 2</b>. The economics already make wash weak: it runs on <b>cumulative</b> volume (splitting is useless), washing $1,000,000 pays $5,000 in fees for a sublinear point gain, and the pool is fixed so a washer only dilutes their own share. And even public, the formula is not a plug-in calculator, since a reward needs everyone's live total. <b>Applied at trade time</b>, so points still only rise: a pattern flagged later feeds the Phase-2 model rather than clawing back past points.</li>
       <li><b>Tunable at launch.</b> &alpha; and C are config values. Before Season 01, run a sensitivity pass over the expected volume distribution (what the top 1% takes, what a task-only user holds) and adjust, no redeploy.</li>
       <li><b>Points only rise.</b> A user's point total only ever goes up as they earn; the live <b>pool share %</b> is the number that moves as others earn. What each share is worth settles at season close; the point total itself never falls.</li>
       <li><b>Lifetime = banked rewards.</b> At close, each season's <b>reward (share &times; that season's pool)</b> banks to a permanent lifetime total. Per-season points reset to zero for the next pool; lifetime never resets. Because each season mints exactly its pool, the token basis stays bounded: everyone's lifetime totals sum to the sum of every season's pool.</li>
@@ -504,6 +505,7 @@
     <ul class="bul">
       <li><b>Flat 0.5% fee</b>, maker and taker the same.</li>
       <li><b>Rebate</b> = 15% to 50% of the 0.5% fee a user's direct referrals pay. It <b>accrues daily into Available</b>, and the user <b>claims</b> it to their SmartX balance. States: Total earned, Available (Claim), Paid, Referred volume.</li>
+      <li><b>How payouts settle.</b> Rebate is <b>claimed</b> by the user; VIP payback <b>auto-credits daily</b> (no claim). Both are internal pUSD balance credits, settled on withdrawal, not a per-payout on-chain transfer. <span class="tc">team to confirm</span></li>
       <li><b>One level only.</b> Both the rebate and the point override apply to <b>direct referrals only</b>, no second level.</li>
     </ul>
 
@@ -511,6 +513,7 @@
     <ul class="bul">
       <li>A referrer's points include <b>10% of each direct referral's social + volume</b>, <b>not</b> the referral's own override, so it never compounds down a chain.</li>
       <li>This 10% is part of <b>your own points</b>, so it lifts your share from inside and never mints pool beyond the 1,000,000. It shows as a separate line from your own social + volume, and counts toward the leaderboard and lifetime total.</li>
+      <li><b>Computed live.</b> The override reads each direct referral's <b>current</b> points, so it moves with them; a referrer's override line is 10% summed across their direct referrals. Pool share and the leaderboard recompute near real time, exact only at settlement.</li>
     </ul>
 
     <h3 class="sub3">Referral rate ladder, re-checked every 30 days</h3>
@@ -569,7 +572,7 @@
     <h3 class="sub3">Verification &amp; abuse</h3>
     <ul class="bul">
       <li><b>On-chain, automatic:</b> trades, volume, referral links, and referred volume.</li>
-      <li><b>X checks run through Twikit</b>, not the paid X API. Bio and quote-retweets are read from the connected handle via Twikit, re-checked on the 30-day cycle. This avoids X API cost, quota, and policy risk. <b>Fail-safe:</b> if a check cannot run (X down or rate-limited), the user <b>keeps their current tier</b> rather than being downgraded, so an outage never wrongly demotes an ambassador.</li>
+      <li><b>X checks run through Twikit</b>, not the paid X API. Bio and quote-retweets are read from the connected handle via Twikit, re-checked on the 30-day cycle. This avoids X API cost, quota, and policy risk. <b>Fail-safe:</b> if a check cannot run (X down or rate-limited), the user <b>keeps their current tier</b> rather than being downgraded, so an outage never wrongly demotes an ambassador. <span class="tc">team to confirm</span> the Twikit auth account and rate-limit handling at scale, thousands of bio and quote-retweet checks per 30-day cycle.</li>
       <li><b>Quality-weighted, internal.</b> Points favor genuine activity; wash-like or self-directed patterns are dampened by the internal volume curve and quality signals (win rate, holding time, maker orders are candidate inputs). <b>None of this is spelled out publicly</b>, so it cannot be reduced to a formula and farmed. We do not advertise that any trade counts.</li>
       <li><b>The $50-in-30-days bar</b> is the anti-farm floor for referrals, so empty sign-ups never count.</li>
     </ul>
